@@ -44,7 +44,7 @@ export default function TabLayout() {
         name="buy_memo"
         options={{
           title: '買い物メモ',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag.fill" color={color} />,
         }}
       />
     </Tabs>
