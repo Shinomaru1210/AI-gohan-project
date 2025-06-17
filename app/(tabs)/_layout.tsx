@@ -1,52 +1,45 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+// app/(tabs)/_layout.tsx
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName: keyof typeof Ionicons.glyphMap = 'ellipse';
+
+          switch (route.name) {
+            case 'fridge':
+              iconName = focused ? 'cube' : 'cube-outline';
+              break;
+            case 'suggestion':
+              iconName = focused ? 'restaurant' : 'restaurant-outline';
+              break;
+            case 'menu_list':
+              iconName = focused ? 'list' : 'list-outline';
+              break;
+            case 'buy_list':
+              iconName = focused ? 'cart' : 'cart-outline';
+              break;
+            case 'mypage':
+              iconName = focused ? 'person' : 'person-outline';
+              break;
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="buy_memo"
-        options={{
-          title: '買い物メモ',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="bag.fill" color={color} />,
-        }}
-      />
+      })}
+    >
+      <Tabs.Screen name="fridge" options={{ title: '冷蔵庫' }} />
+      <Tabs.Screen name="suggestion" options={{ title: '提案ごはん' }} />
+      <Tabs.Screen name="menu_list" options={{ title: '献立リスト' }} />
+      <Tabs.Screen name="buy_list" options={{ title: '買い物リスト' }} />
+      <Tabs.Screen name="mypage" options={{ title: 'マイページ' }} />
     </Tabs>
   );
 }
