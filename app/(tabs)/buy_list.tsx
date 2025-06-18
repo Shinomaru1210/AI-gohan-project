@@ -1,6 +1,7 @@
 // app/(tabs)/buy_list.tsx
 
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -30,7 +31,7 @@ export default function BuyListScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>買い物リスト</Text>
 
       <FlatList
@@ -62,48 +63,23 @@ export default function BuyListScreen() {
         <Ionicons name="add-circle" size={28} color="white" />
         <Text style={styles.addButtonText}>食材を追加</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 15,
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  title: { fontSize: 22, fontWeight: '600', marginBottom: 15 },
   itemBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 12, paddingHorizontal: 10,
+    borderBottomColor: '#eee', borderBottomWidth: 1,
   },
-  itemText: {
-    marginLeft: 10,
-    fontSize: 18,
-  },
-  itemChecked: {
-    backgroundColor: '#f1f8e9',
-  },
+  itemText: { marginLeft: 10, fontSize: 18 },
+  itemChecked: { backgroundColor: '#f1f8e9' },
   addButton: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
+    marginTop: 20, flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#4CAF50', padding: 12, borderRadius: 8, justifyContent: 'center',
   },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    marginLeft: 8,
-  },
+  addButtonText: { color: '#fff', fontSize: 16, marginLeft: 8 },
 });

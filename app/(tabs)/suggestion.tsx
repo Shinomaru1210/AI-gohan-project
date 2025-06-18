@@ -1,5 +1,6 @@
 // app/(tabs)/suggestion.tsx
 
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,7 +9,6 @@ export default function SuggestionScreen() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const handleGenerate = () => {
-    // TODO: 実際にはAPIやAIに食材を送って提案を受ける
     const dummySuggestions = [
       '豚汁とごはん',
       '野菜炒めセット',
@@ -18,7 +18,7 @@ export default function SuggestionScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>今日の献立提案</Text>
 
       <TouchableOpacity style={styles.generateButton} onPress={handleGenerate}>
@@ -37,50 +37,24 @@ export default function SuggestionScreen() {
           ))
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 15,
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  title: { fontSize: 22, fontWeight: '600', marginBottom: 15 },
   generateButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FF7043',
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
-    marginBottom: 20,
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#FF7043', padding: 12, borderRadius: 8,
+    justifyContent: 'center', marginBottom: 20,
   },
-  generateButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    marginLeft: 8,
-  },
-  list: {
-    flex: 1,
-  },
+  generateButtonText: { color: '#fff', fontSize: 16, marginLeft: 8 },
+  list: { flex: 1 },
   card: {
-    backgroundColor: '#FFF3E0',
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 12,
+    backgroundColor: '#FFF3E0', padding: 16,
+    borderRadius: 10, marginBottom: 12,
   },
-  menuText: {
-    fontSize: 18,
-  },
-  placeholder: {
-    fontStyle: 'italic',
-    color: 'gray',
-    fontSize: 16,
-  },
+  menuText: { fontSize: 18 },
+  placeholder: { fontStyle: 'italic', color: 'gray', fontSize: 16 },
 });

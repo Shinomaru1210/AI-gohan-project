@@ -1,5 +1,6 @@
 // app/(tabs)/fridge.tsx
 
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,14 +13,13 @@ export default function FridgeScreen() {
   ]);
 
   const handleAdd = () => {
-    // 仮の追加処理：実装後にモーダルやフォームから入力できるように拡張予定
     const newItem = `新しい食材 ${ingredients.length + 1}`;
     setIngredients(prev => [...prev, newItem]);
     Alert.alert('追加しました', `${newItem} を冷蔵庫に追加しました`);
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>冷蔵庫の中身</Text>
 
       <FlatList
@@ -37,7 +37,7 @@ export default function FridgeScreen() {
         <Ionicons name="add-circle" size={28} color="white" />
         <Text style={styles.addButtonText}>食材を追加</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -47,34 +47,15 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 15,
-  },
+  title: { fontSize: 22, fontWeight: '600', marginBottom: 15 },
   itemBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: 10, borderBottomColor: '#eee', borderBottomWidth: 1,
   },
-  itemText: {
-    marginLeft: 10,
-    fontSize: 18,
-  },
+  itemText: { marginLeft: 10, fontSize: 18 },
   addButton: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#4CAF50',
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
+    marginTop: 20, flexDirection: 'row', alignItems: 'center',
+    backgroundColor: '#4CAF50', padding: 12, borderRadius: 8, justifyContent: 'center',
   },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    marginLeft: 8,
-  },
+  addButtonText: { color: '#fff', fontSize: 16, marginLeft: 8 },
 });

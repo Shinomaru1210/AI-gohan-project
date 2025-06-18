@@ -17,7 +17,7 @@ export default function TabLayout() {
             case 'suggestion':
               iconName = focused ? 'restaurant' : 'restaurant-outline';
               break;
-            case 'menu_list':
+            case 'home':
               iconName = focused ? 'list' : 'list-outline';
               break;
             case 'buy_list':
@@ -37,7 +37,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="fridge" options={{ title: '冷蔵庫' }} />
       <Tabs.Screen name="suggestion" options={{ title: '提案ごはん' }} />
-      <Tabs.Screen name="menu_list" options={{ title: '献立リスト' }} />
+      <Tabs.Screen name="home" options={{ title: 'HOME' }} />
       <Tabs.Screen name="buy_list" options={{ title: '買い物リスト' }} />
       <Tabs.Screen name="mypage" options={{ title: 'マイページ' }} />
     </Tabs>
