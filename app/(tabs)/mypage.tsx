@@ -1,13 +1,24 @@
 // app/(tabs)/mypage.tsx
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
+import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+type Family = {
+  id: number;
+  name: string;
+  menber: number;
+};
 
 export default function MypageScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [hasAllergy, setHasAllergy] = useState(false);
+
+  const [FamilyMenber, setMenber] = useState<Family[]>([
+    { id:1, name:'母親', menber:1},
+    { id:2, name:'父親', menber:1},
+  ]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -46,10 +57,27 @@ export default function MypageScreen() {
           <Ionicons name="information-circle" size={24} color="#9E9E9E" />
           <Text style={styles.itemText}>バージョン: 1.0.0</Text>
         </View>
+
+        <View style={styles.section}>
+          <AntDesign name="user" size={24} color="black" />
+          <Text style={styles.itemText}>家族構成</Text>
+          <Text style={styles.itemText}>家族を追加
+          <Entypo name='circle-with-plus' size={20} color="black"/>
+          </Text>
+          <ScrollView>
+            {FamilyMenber.map((number) => (
+            <Text key={number.id}>
+              {number.name}:{number.menber}人
+            </Text>
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#FAFAFA' },
