@@ -2,13 +2,12 @@
 
 import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { NativeSyntheticEvent, ScrollView, StyleSheet, Switch, Text, TextInput, TextInputSubmitEditingEventData, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Family = {
   id: number;
   name: string;
-  menber: number;
 };
 
 export default function MypageScreen() {
@@ -16,9 +15,23 @@ export default function MypageScreen() {
   const [hasAllergy, setHasAllergy] = useState(false);
 
   const [FamilyMenber, setMenber] = useState<Family[]>([
-    { id:1, name:'母親', menber:1},
-    { id:2, name:'父親', menber:1},
   ]);
+
+const [setShowInput, setInput] = useState(false);
+const [inputText, setInputText] = useState('');
+
+const setField = () => {
+  setInput(true);
+}
+
+const pressEnter = (e:NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    const text = e.nativeEvent.text;
+    setMenber(prev => [
+    ...prev,
+    { id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, name: text, menber: 0 }
+    ]);
+    setInputText(''); // 入力欄をクリア
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -29,6 +42,37 @@ export default function MypageScreen() {
           <Ionicons name="person-circle" size={28} color="#2196F3" />
           <Text style={styles.sectionTitle}>ユーザー設定</Text>
           <Text style={styles.itemText}>仮ユーザー: guest@example.com</Text>
+        </View>
+
+        <View style={styles.section}>
+          <AntDesign name="user" size={24} color="black" />
+          <Text style={styles.itemText}>家族構成</Text>
+          <Text style={styles.itemText}>家族を追加
+          <TouchableOpacity onPress={setField}>
+            <Entypo name='circle-with-plus' size={20} color="black"/>
+          </TouchableOpacity>
+          </Text>
+          {setShowInput && (
+            <TextInput
+              style={styles.itemText}
+              value={inputText}
+              onChangeText={setInputText}
+              placeholder='名前を入力'
+              onSubmitEditing={pressEnter}
+            />
+          )}
+
+          {inputText !== '' && (
+            <Text style={styles.itemText}>入力された名前：{inputText}</Text>     
+          )}
+          
+        <ScrollView>
+          {FamilyMenber.map((number) => (
+          <Text key={number.id}>
+          {number.name}
+          </Text>
+          ))}
+        </ScrollView>
         </View>
 
         <View style={styles.section}>
@@ -57,27 +101,10 @@ export default function MypageScreen() {
           <Ionicons name="information-circle" size={24} color="#9E9E9E" />
           <Text style={styles.itemText}>バージョン: 1.0.0</Text>
         </View>
-
-        <View style={styles.section}>
-          <AntDesign name="user" size={24} color="black" />
-          <Text style={styles.itemText}>家族構成</Text>
-          <Text style={styles.itemText}>家族を追加
-          <Entypo name='circle-with-plus' size={20} color="black"/>
-          </Text>
-          <ScrollView>
-            {FamilyMenber.map((number) => (
-            <Text key={number.id}>
-              {number.name}:{number.menber}人
-            </Text>
-            ))}
-          </ScrollView>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#FAFAFA' },
