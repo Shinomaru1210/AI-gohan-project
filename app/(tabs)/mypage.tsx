@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 type Family = {
   id: number;
   name: string;
+  menber: number;
 };
 
 export default function MypageScreen() {
@@ -15,23 +16,31 @@ export default function MypageScreen() {
   const [hasAllergy, setHasAllergy] = useState(false);
 
   const [FamilyMenber, setMenber] = useState<Family[]>([
-  ]);
+  ])
 
 const [setShowInput, setInput] = useState(false);
 const [inputText, setInputText] = useState('');
+const [showButton, setShowButton] = useState(false);
+const [nextId, setNextId] = useState(3); // 初期IDは既存数+1
 
 const setField = () => {
   setInput(true);
 }
 
 const pressEnter = (e:NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    const text = e.nativeEvent.text;
-    setMenber(prev => [
-    ...prev,
-    { id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1, name: text, menber: 0 }
-    ]);
-    setInputText(''); // 入力欄をクリア
-};
+  const text = e.nativeEvent.text;
+  if (text.trim() === '') return;
+
+  setMenber(prev => [...prev, { id: nextId, name: text, menber: 0 }]);
+  setNextId(prev => prev + 1);
+
+  setInputText(''); // 入力欄をクリア
+  setShowButton(true);
+}
+
+const delate = (id: number) => {
+  setMenber(prev => prev.filter(member => member.id !== id));
+}
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -49,7 +58,7 @@ const pressEnter = (e:NativeSyntheticEvent<TextInputSubmitEditingEventData>) => 
           <Text style={styles.itemText}>家族構成</Text>
           <Text style={styles.itemText}>家族を追加
           <TouchableOpacity onPress={setField}>
-            <Entypo name='circle-with-plus' size={20} color="black"/>
+            <Entypo name='circle-with-plus' size={20} color="black" style={styles.itemText}/>
           </TouchableOpacity>
           </Text>
           {setShowInput && (
@@ -65,14 +74,23 @@ const pressEnter = (e:NativeSyntheticEvent<TextInputSubmitEditingEventData>) => 
           {inputText !== '' && (
             <Text style={styles.itemText}>入力された名前：{inputText}</Text>     
           )}
-          
-        <ScrollView>
-          {FamilyMenber.map((number) => (
-          <Text key={number.id}>
-          {number.name}
-          </Text>
+  
+          {FamilyMenber.map((menber) => (
+          <View 
+            key={menber.id}
+            style={{
+              flexDirection: 'row'
+            }}
+          >
+            <Text>{menber.name}</Text>
+
+            {showButton && (
+              <TouchableOpacity onPress={() => delate(menber.id)}>
+                <AntDesign name="minuscircleo" size={20} color="black" style={styles.itemText}/>
+              </TouchableOpacity>
+            )}
+          </View>
           ))}
-        </ScrollView>
         </View>
 
         <View style={styles.section}>
@@ -111,13 +129,20 @@ const styles = StyleSheet.create({
   container: { padding: 20 },
   title: { fontSize: 24, fontWeight: '700', marginBottom: 20 },
   section: {
-    backgroundColor: '#FFFFFF', padding: 16, borderRadius: 10, marginBottom: 16,
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2,
+  backgroundColor: '#FFFFFF', padding: 16, borderRadius: 10, marginBottom: 16,
+  shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2,
   },
   sectionTitle: { fontSize: 18, fontWeight: '600', marginTop: 8, marginBottom: 4 },
   row: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8,
+  flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8,
   },
   itemText: { fontSize: 16 },
   subText: { fontSize: 13, marginTop: 4, color: '#888' },
+  button: {
+  backgroundColor: '#2196F3',
+  paddingVertical: 10,
+  paddingHorizontal: 16,
+  marginLeft: 8,
+  borderRadius: 6,
+  },
 });
