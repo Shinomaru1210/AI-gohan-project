@@ -2,8 +2,28 @@
 
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import {
+  useFonts,
+  NotoSansJP_400Regular,
+  NotoSansJP_700Bold,
+} from '@expo-google-fonts/noto-sans-jp';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
+  const [fontsLoaded] = useFonts({
+    NotoSansJP_400Regular,
+    NotoSansJP_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
+
   return (
     <Tabs
       screenOptions={({ route }) => ({
@@ -18,7 +38,7 @@ export default function TabLayout() {
               iconName = focused ? 'restaurant' : 'restaurant-outline';
               break;
             case 'home':
-              iconName = focused ? 'list' : 'list-outline';
+              iconName = focused ? 'home' : 'home-outline';
               break;
             case 'buy_list':
               iconName = focused ? 'cart' : 'cart-outline';
@@ -30,8 +50,12 @@ export default function TabLayout() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
+        tabBarActiveTintColor: '#FF7043', // オレンジ基調
         tabBarInactiveTintColor: 'gray',
+        tabBarLabelStyle: {
+          fontFamily: 'NotoSansJP_400Regular',
+          fontSize: 12,
+        },
         headerShown: false,
       })}
     >

@@ -1,195 +1,90 @@
 // app/(tabs)/home.tsx
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
+import DateSelector from '@/components/home/DateSelector';
 
-const days = ['月', '火', '水', '木', '金', '土', '日'];
-
-type MealType = '朝ごはん' | '昼ごはん' | '夜ごはん';
+const defaultMeals = { 朝ごはん: '', 昼ごはん: '', 夜ごはん: '' };
+type MealType = keyof typeof defaultMeals;
+type MealsPerDay = Record<string, typeof defaultMeals>;
 
 export default function HomeScreen() {
-  const [selectedDay, setSelectedDay] = useState(0);
-  const [meals, setMeals] = useState<Record<MealType, string>>({
-    朝ごはん: '',
-    昼ごはん: '',
-    夜ごはん: '',
-  });
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [mealData, setMealData] = useState<MealsPerDay>({});
 
-  const handleMealEdit = (type: MealType) => {
-    const prev = meals[type];
-    const next =
-      prev === '食べなかった' ? '' : prev === '' ? '食べなかった' : '';
-    setMeals({ ...meals, [type]: next });
+  const currentMeals = mealData[selectedDate] || defaultMeals;
+
+  const handleMealToggle = (type: MealType) => {
+    const prev = currentMeals[type];
+    const next = prev === '食べなかった' ? '' : '食べなかった';
+    const updated = { ...currentMeals, [type]: next };
+    setMealData({ ...mealData, [selectedDate]: updated });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>HOME</Text>
+      <Text style={styles.title}>今日のごはん</Text>
 
-      {/* 曜日ボタン */}
-      <View style={styles.dayRow}>
-        {days.map((day, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.dayButton,
-              selectedDay === index && styles.dayButtonSelected,
-            ]}
-            onPress={() => setSelectedDay(index)}
-          >
-            <Text
-              style={[
-                styles.dayText,
-                selectedDay === index && styles.dayTextSelected,
-              ]}
-            >
-              {day}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <DateSelector onDateSelect={(dateStr) => setSelectedDate(dateStr)} />
 
-      {/* ごはんセクション */}
-      {(['朝ごはん', '昼ごはん', '夜ごはん'] as MealType[]).map((type) => (
+      {Object.keys(defaultMeals).map((type) => (
         <TouchableOpacity
           key={type}
-          style={styles.mealBox}
-          onPress={() => handleMealEdit(type)}
+          style={styles.mealCard}
+          onPress={() => handleMealToggle(type as MealType)}
         >
           <Text style={styles.mealLabel}>{type}</Text>
-          {meals[type] !== '' && (
-            <View style={styles.tag}>
-              <Text style={styles.tagText}>{meals[type]}</Text>
-            </View>
+          {currentMeals[type as MealType] && (
+            <View style={styles.tag}><Text style={styles.tagText}>{currentMeals[type as MealType]}</Text></View>
           )}
         </TouchableOpacity>
       ))}
 
-      {/* 共有ボタン */}
       <TouchableOpacity style={styles.shareButton}>
-        <Text style={styles.shareButtonText}>
-          この日のご飯をみんなに共有
-        </Text>
+        <Text style={styles.shareButtonText}>みんなと共有する</Text>
       </TouchableOpacity>
 
-      {/* みんなのご飯一覧 */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>みんなのご飯一覧</Text>
+        <Text style={styles.sectionTitle}>みんなのごはん</Text>
         <TouchableOpacity>
-          <Text style={styles.detailLink}>詳しく見る</Text>
+          <Text style={styles.detailLink}>もっと見る</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.feed}>
-        {/* 仮の投稿1つ */}
         <View style={styles.feedCard}>
-          <Text style={styles.feedText}>🍚 写真とコメントが入ります</Text>
+          <Text style={styles.feedText}>🍚 鮭の塩焼きと味噌汁の朝ごはん！</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
+const ORANGE = '#FF7043';
+const LIGHT_BG = '#FFF7F1';
+
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#E8F5E9' },
-  title: { fontSize: 22, fontWeight: '700', marginBottom: 10, textAlign: 'center' },
-
-  dayRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
+  container: { flex: 1, padding: 24, backgroundColor: LIGHT_BG },
+  title: { fontSize: 24, fontWeight: '700', marginBottom: 16, textAlign: 'center', color: '#BF360C' },
+  mealCard: {
+    backgroundColor: '#fff', padding: 16, marginBottom: 12, borderRadius: 12,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, elevation: 2,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
   },
-  dayButton: {
-    backgroundColor: '#A5D6A7',
-    borderRadius: 20,
-    width: 36,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dayButtonSelected: {
-    backgroundColor: '#388E3C',
-  },
-  dayText: {
-    color: '#2E7D32',
-    fontWeight: '600',
-  },
-  dayTextSelected: {
-    color: 'white',
-  },
-
-  mealBox: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#C8E6C9',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  mealLabel: {
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  tag: {
-    backgroundColor: '#2E7D32',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  tagText: {
-    color: 'white',
-    fontSize: 13,
-  },
-
+  mealLabel: { fontSize: 18, fontWeight: '600', color: '#333' },
+  tag: { backgroundColor: ORANGE, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  tagText: { color: '#fff', fontSize: 13 },
   shareButton: {
-    marginTop: 20,
-    backgroundColor: '#1E88E5',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: 'center',
+    marginTop: 20, backgroundColor: ORANGE, borderRadius: 12, padding: 14, alignItems: 'center',
   },
-  shareButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
+  shareButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   sectionHeader: {
-    marginTop: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginTop: 28, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  detailLink: {
-    color: '#1E88E5',
-    fontSize: 14,
-    textDecorationLine: 'underline',
-  },
-
-  feed: {
-    marginTop: 12,
-  },
-  feedCard: {
-    backgroundColor: '#388E3C',
-    padding: 16,
-    borderRadius: 10,
-  },
-  feedText: {
-    color: 'white',
-    fontSize: 16,
-  },
+  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#BF360C' },
+  detailLink: { color: ORANGE, fontSize: 14, textDecorationLine: 'underline' },
+  feed: { marginTop: 16 },
+  feedCard: { backgroundColor: '#FFF3E0', borderRadius: 12, padding: 16 },
+  feedText: { fontSize: 16, color: '#333' },
 });
