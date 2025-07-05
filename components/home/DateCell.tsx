@@ -1,76 +1,50 @@
-import React, { useEffect } from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 type Props = {
-  label: string; // 日付表示（例：06/26）
-  weekday: string; // 曜日表示（例：Wed）
+  label: string; // 日付（例："02"）
+  weekday: string; // 曜日（例："Wed"）
   isSelected: boolean;
   onPress: () => void;
 };
 
-const ORANGE = '#FF7043';
-
-export default function DateCell({
-  label,
-  weekday,
-  isSelected,
-  onPress,
-}: Props) {
-  const animatedWidth = useSharedValue(isSelected ? 70 : 50);
-
-  useEffect(() => {
-    animatedWidth.value = withTiming(isSelected ? 70 : 50, { duration: 200 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSelected]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    width: animatedWidth.value,
-  }));
-
+export default function DateCell({ label, weekday, isSelected, onPress }: Props) {
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Animated.View
-        style={[
-          styles.cell,
-          isSelected && styles.selectedCell,
-          animatedStyle,
-        ]}
-      >
-        <Text style={[styles.dateText, isSelected && styles.selectedText]}>
-          {label}
-        </Text>
-        <Text style={[styles.weekText, isSelected && styles.selectedText]}>
-          {weekday}
-        </Text>
-      </Animated.View>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        isSelected && styles.selected,
+        // 横間隔を小さく調整
+        { marginHorizontal: 2 },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Text style={[styles.dateText, isSelected && styles.selectedText]}>{label}</Text>
+      <Text style={[styles.weekText, isSelected && styles.selectedText]}>{weekday}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  cell: {
+  container: {
+    backgroundColor: '#FFECE2',
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 2,
-    paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: '#FBE9E7',
   },
-  selectedCell: {
-    backgroundColor: ORANGE,
+  selected: {
+    backgroundColor: '#FF7043',
   },
   dateText: {
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: '600',
-    color: '#444',
+    color: '#333',
   },
   weekText: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#666',
   },
   selectedText: {

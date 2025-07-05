@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import dayjs from 'dayjs';
 import DateCell from './DateCell';
 
@@ -13,15 +13,15 @@ export default function DateSelector({ onDateSelect }: Props) {
   const [selectedDate, setSelectedDate] = useState(today.format('YYYY-MM-DD'));
 
   const getStartOfWeek = (refDay: dayjs.Dayjs) =>
-    refDay.subtract((refDay.day() + 6) % 7, 'day'); // 月曜始まり対応
+    refDay.subtract((refDay.day() + 6) % 7, 'day');
 
   const startOfWeek = getStartOfWeek(today.add(weekOffset * 7, 'day'));
 
   const dates = Array.from({ length: 7 }, (_, i) => {
     const d = startOfWeek.add(i, 'day');
     return {
-      label: d.format('MM/DD'),
-      weekday: d.format('ddd'),
+      label: d.format('DD'),           // "02"
+      weekday: d.format('ddd'),        // "Wed"
       full: d.format('YYYY-MM-DD'),
     };
   });
@@ -33,33 +33,39 @@ export default function DateSelector({ onDateSelect }: Props) {
 
   return (
     <View style={styles.wrapper}>
+      {/* 年月表示 */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => setWeekOffset((prev) => prev - 1)}>
           <Text style={styles.arrow}>{'＜'}</Text>
         </TouchableOpacity>
-        <Text style={styles.range}>
-          {startOfWeek.format('M/D')}〜{startOfWeek.add(6, 'day').format('M/D')}
-        </Text>
+        <Text style={styles.range}>{startOfWeek.format('YYYY年M月')}</Text>
         <TouchableOpacity onPress={() => setWeekOffset((prev) => prev + 1)}>
           <Text style={styles.arrow}>{'＞'}</Text>
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={dates}
-        keyExtractor={(item) => item.full}
-        renderItem={({ item }) => (
-          <DateCell
-            label={item.label}
-            weekday={item.weekday}
-            isSelected={item.full === selectedDate}
-            onPress={() => handleSelect(item.full)}
-          />
-        )}
-        horizontal
-        contentContainerStyle={styles.row}
-        showsHorizontalScrollIndicator={false}
-      />
+      {/* 日付セル */}
+      <View style={styles.row}>
+        {dates.map((item) => {
+          const isSelected = item.full === selectedDate;
+          return (
+            <View
+              key={item.full}
+              style={{
+                flex: isSelected ? 1.1 : 0.98,
+                alignItems: 'center',
+              }}
+            >
+              <DateCell
+                label={item.label}
+                weekday={item.weekday}
+                isSelected={isSelected}
+                onPress={() => handleSelect(item.full)}
+              />
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }
@@ -68,27 +74,29 @@ const ORANGE = '#FF7043';
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: 4,
+    marginHorizontal: -24, // ← SafeAreaView の padding: 24 を相殺
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
+    paddingHorizontal: 12,
   },
   arrow: {
     fontSize: 20,
     color: ORANGE,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
   },
   range: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: '#555',
   },
   row: {
-    justifyContent: 'space-between',
-    paddingHorizontal: 12,
+    flexDirection: 'row',
+    paddingHorizontal: 4,
   },
 });
