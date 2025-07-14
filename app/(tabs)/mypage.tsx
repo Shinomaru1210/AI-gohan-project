@@ -1,148 +1,358 @@
 // app/(tabs)/mypage.tsx
 
-import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { NativeSyntheticEvent, ScrollView, StyleSheet, Switch, Text, TextInput, TextInputSubmitEditingEventData, TouchableOpacity, View } from 'react-native';
+import { Animated, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Surface, Switch } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Family = {
-  id: number;
-  name: string;
-  menber: number;
-};
+export default function MyPageScreen() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notifications, setNotifications] = useState(true);
+  const [scaleAnim] = useState(new Animated.Value(1));
 
-export default function MypageScreen() {
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [hasAllergy, setHasAllergy] = useState(false);
+  // テーマカラーの取得
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const textSecondaryColor = '#6C757D';
 
-  const [FamilyMenber, setMenber] = useState<Family[]>([
-  ])
+  const handleLogout = () => {
+    // ボタンアニメーション
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
 
-const [setShowInput, setInput] = useState(false);
-const [inputText, setInputText] = useState('');
-const [showButton, setShowButton] = useState(false);
-const [nextId, setNextId] = useState(3); // 初期IDは既存数+1
+    // ログアウト処理
+    console.log('ログアウトしました');
+  };
 
-const setField = () => {
-  setInput(true);
-}
+  const menuItems = [
+    {
+      id: '1',
+      title: 'プロフィール編集',
+      icon: 'account-edit',
+      color: '#4CAF50',
+      onPress: () => console.log('プロフィール編集'),
+    },
+    {
+      id: '2',
+      title: '食事履歴',
+      icon: 'food-fork-drink',
+      color: '#2196F3',
+      onPress: () => console.log('食事履歴'),
+    },
+    {
+      id: '3',
+      title: '栄養分析',
+      icon: 'chart-line',
+      color: '#FF9800',
+      onPress: () => console.log('栄養分析'),
+    },
+    {
+      id: '4',
+      title: 'お気に入りレシピ',
+      icon: 'heart',
+      color: '#E91E63',
+      onPress: () => console.log('お気に入りレシピ'),
+    },
+    {
+      id: '5',
+      title: '設定',
+      icon: 'cog',
+      color: '#607D8B',
+      onPress: () => console.log('設定'),
+    },
+  ];
 
-const pressEnter = (e:NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-  const text = e.nativeEvent.text;
-  if (text.trim() === '') return;
-
-  setMenber(prev => [...prev, { id: nextId, name: text, menber: 0 }]);
-  setNextId(prev => prev + 1);
-
-  setInputText(''); // 入力欄をクリア
-  setShowButton(true);
-}
-
-const delate = (id: number) => {
-  setMenber(prev => prev.filter(member => member.id !== id));
-}
+  const renderMenuItem = (item: typeof menuItems[0]) => (
+    <TouchableOpacity
+      key={item.id}
+      style={styles.menuItem}
+      onPress={item.onPress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.menuItemLeft}>
+        <View style={[styles.iconContainer, { backgroundColor: item.color + '20' }]}>
+          <MaterialCommunityIcons
+            name={item.icon as any}
+            size={20}
+            color={item.color}
+          />
+        </View>
+        <Text style={[styles.menuItemText, { color: textColor }]}>{item.title}</Text>
+      </View>
+      <MaterialCommunityIcons
+        name="chevron-right"
+        size={20}
+        color={textSecondaryColor}
+      />
+    </TouchableOpacity>
+  );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>マイページ</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: textColor }]}>
+          マイページ
+        </Text>
+        <Text style={[styles.subtitle, { color: textSecondaryColor }]}>
+          アカウントとアプリの設定
+        </Text>
+      </View>
 
-        <View style={styles.section}>
-          <Ionicons name="person-circle" size={28} color="#2196F3" />
-          <Text style={styles.sectionTitle}>ユーザー設定</Text>
-          <Text style={styles.itemText}>仮ユーザー: guest@example.com</Text>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ユーザー情報 */}
+        <Surface style={[styles.userCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={2}>
+          <View style={styles.userInfo}>
+            <View style={styles.avatarContainer}>
+              <MaterialCommunityIcons
+                name="account-circle"
+                size={60}
+                color="#FF6B35"
+              />
+            </View>
+            <View style={styles.userDetails}>
+              <Text style={[styles.userName, { color: textColor }]}>田中太郎</Text>
+              <Text style={[styles.userEmail, { color: textSecondaryColor }]}>tanaka@example.com</Text>
+              <View style={styles.userStats}>
+                <View style={styles.statItem}>
+                  <Text style={[styles.statNumber, { color: '#FF6B35' }]}>127</Text>
+                  <Text style={[styles.statLabel, { color: textSecondaryColor }]}>記録日数</Text>
+                </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                  <Text style={[styles.statNumber, { color: '#FF6B35' }]}>45</Text>
+                  <Text style={[styles.statLabel, { color: textSecondaryColor }]}>レシピ数</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </Surface>
+
+        {/* 設定項目 */}
+        <View style={styles.settingsSection}>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>設定</Text>
+          
+          <Surface style={[styles.settingsCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
+            <View style={styles.settingItem}>
+              <View style={styles.settingLeft}>
+                <MaterialCommunityIcons
+                  name="theme-light-dark"
+                  size={20}
+                  color="#FF9800"
+                />
+                <Text style={[styles.settingText, { color: textColor }]}>ダークモード</Text>
+              </View>
+              <Switch
+                value={isDarkMode}
+                onValueChange={setIsDarkMode}
+                color="#FF6B35"
+              />
+            </View>
+            
+            <View style={styles.settingDivider} />
+            
+            <View style={styles.settingItem}>
+              <View style={styles.settingLeft}>
+                <MaterialCommunityIcons
+                  name="bell"
+                  size={20}
+                  color="#2196F3"
+                />
+                <Text style={[styles.settingText, { color: textColor }]}>通知</Text>
+              </View>
+              <Switch
+                value={notifications}
+                onValueChange={setNotifications}
+                color="#FF6B35"
+              />
+            </View>
+          </Surface>
         </View>
 
-        <View style={styles.section}>
-          <AntDesign name="user" size={24} color="black" />
-          <Text style={styles.itemText}>家族構成</Text>
-          <Text style={styles.itemText}>家族を追加
-          <TouchableOpacity onPress={setField}>
-            <Entypo name='circle-with-plus' size={20} color="black" style={styles.itemText}/>
-          </TouchableOpacity>
-          </Text>
-          {setShowInput && (
-            <TextInput
-              style={styles.itemText}
-              value={inputText}
-              onChangeText={setInputText}
-              placeholder='名前を入力'
-              onSubmitEditing={pressEnter}
-            />
-          )}
+        {/* メニュー項目 */}
+        <View style={styles.menuSection}>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>メニュー</Text>
+          
+          <Surface style={[styles.menuCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
+            {menuItems.map(renderMenuItem)}
+          </Surface>
+        </View>
 
-          {inputText !== '' && (
-            <Text style={styles.itemText}>入力された名前：{inputText}</Text>     
-          )}
-  
-          {FamilyMenber.map((menber) => (
-          <View 
-            key={menber.id}
-            style={{
-              flexDirection: 'row'
-            }}
+        {/* ログアウトボタン */}
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+          <TouchableOpacity
+            style={[styles.logoutButton, { backgroundColor: '#E74C3C' }]}
+            onPress={handleLogout}
+            activeOpacity={0.8}
           >
-            <Text>{menber.name}</Text>
-
-            {showButton && (
-              <TouchableOpacity onPress={() => delate(menber.id)}>
-                <AntDesign name="minuscircleo" size={20} color="black" style={styles.itemText}/>
-              </TouchableOpacity>
-            )}
-          </View>
-          ))}
-        </View>
-
-        <View style={styles.section}>
-          <Ionicons name="notifications" size={24} color="#FFC107" />
-          <View style={styles.row}>
-            <Text style={styles.itemText}>通知を受け取る</Text>
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Ionicons name="alert-circle" size={24} color="#FF7043" />
-          <View style={styles.row}>
-            <Text style={styles.itemText}>アレルギー登録</Text>
-            <Switch value={hasAllergy} onValueChange={setHasAllergy} />
-          </View>
-          {hasAllergy && (
-            <Text style={styles.subText}>※ 今後アレルギー食材の除外設定に対応予定</Text>
-          )}
-        </View>
-
-        <View style={styles.section}>
-          <Ionicons name="information-circle" size={24} color="#9E9E9E" />
-          <Text style={styles.itemText}>バージョン: 1.0.0</Text>
-        </View>
+            <MaterialCommunityIcons name="logout" size={20} color="white" />
+            <Text style={styles.logoutButtonText}>ログアウト</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#FAFAFA' },
-  container: { padding: 20 },
-  title: { fontSize: 24, fontWeight: '700', marginBottom: 20 },
-  section: {
-  backgroundColor: '#FFFFFF', padding: 16, borderRadius: 10, marginBottom: 16,
-  shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 2,
+  container: {
+    flex: 1,
   },
-  sectionTitle: { fontSize: 18, fontWeight: '600', marginTop: 8, marginBottom: 4 },
-  row: {
-  flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8,
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 20,
   },
-  itemText: { fontSize: 16 },
-  subText: { fontSize: 13, marginTop: 4, color: '#888' },
-  button: {
-  backgroundColor: '#2196F3',
-  paddingVertical: 10,
-  paddingHorizontal: 16,
-  marginLeft: 8,
-  borderRadius: 6,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  content: {
+    flex: 1,
+  },
+  contentContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 32,
+  },
+  userCard: {
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 20,
+    marginBottom: 24,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatarContainer: {
+    marginRight: 16,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    marginBottom: 12,
+  },
+  userStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+  },
+  statDivider: {
+    width: 1,
+    height: 30,
+    backgroundColor: '#E9ECEF',
+    marginHorizontal: 16,
+  },
+  settingsSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  settingsCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  settingLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  settingText: {
+    fontSize: 16,
+  },
+  settingDivider: {
+    height: 1,
+    backgroundColor: '#E9ECEF',
+    marginHorizontal: 16,
+  },
+  menuSection: {
+    marginBottom: 24,
+  },
+  menuCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  menuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuItemText: {
+    fontSize: 16,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

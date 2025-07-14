@@ -1,102 +1,241 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import DateCell from './DateCell';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-paper';
 
 type Props = {
-  onDateSelect: (date: string) => void;
+  onDateSelect: (dateStr: string) => void;
 };
 
-export default function DateSelector({ onDateSelect }: Props) {
-  const today = dayjs();
-  const [weekOffset, setWeekOffset] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(today.format('YYYY-MM-DD'));
+const { width } = Dimensions.get('window');
 
-  const getStartOfWeek = (refDay: dayjs.Dayjs) =>
-    refDay.subtract((refDay.day() + 6) % 7, 'day');
+const DateSelector: React.FC<Props> = ({ onDateSelect }) => {
+  const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
+  const [currentWeek, setCurrentWeek] = useState(dayjs().startOf('week'));
+  const scrollViewRef = useRef<ScrollView>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const startOfWeek = getStartOfWeek(today.add(weekOffset * 7, 'day'));
+  // テーマカラーの取得
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
+  const textSecondaryColor = '#6C757D';
 
-  const dates = Array.from({ length: 7 }, (_, i) => {
-    const d = startOfWeek.add(i, 'day');
-    return {
-      label: d.format('DD'),           // "02"
-      weekday: d.format('ddd'),        // "Wed"
-      full: d.format('YYYY-MM-DD'),
-    };
-  });
+  // 週の日付を生成
+  const getWeekDates = () => {
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      dates.push(currentWeek.add(i, 'day').format('YYYY-MM-DD'));
+    }
+    return dates;
+  };
 
-  const handleSelect = (date: string) => {
-    setSelectedDate(date);
-    onDateSelect(date);
+  const dates = getWeekDates();
+
+  useEffect(() => {
+    onDateSelect(selectedDate);
+    
+    // アニメーション
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  }, [selectedDate, onDateSelect, fadeAnim]);
+
+  const handlePrevWeek = () => {
+    setCurrentWeek(prev => prev.subtract(1, 'week'));
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeek(prev => prev.add(1, 'week'));
+  };
+
+  const scrollToToday = () => {
+    const today = dayjs().format('YYYY-MM-DD');
+    const todayWeek = dayjs().startOf('week');
+    setCurrentWeek(todayWeek);
+    setSelectedDate(today);
+  };
+
+  const getDayLabel = (date: string) => {
+    const targetDate = dayjs(date);
+    const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+    return dayNames[targetDate.day()];
+  };
+
+  const getDateColor = (date: string) => {
+    const targetDate = dayjs(date);
+    const today = dayjs();
+    
+    if (targetDate.isSame(today, 'day')) return '#FF6B35';
+    if (targetDate.day() === 0) return '#E74C3C';
+    if (targetDate.day() === 6) return '#3498DB';
+    return textColor;
+  };
+
+  const getDateBackgroundColor = (date: string) => {
+    const targetDate = dayjs(date);
+    const today = dayjs();
+    
+    if (targetDate.isSame(today, 'day')) return '#FF6B35' + '20';
+    if (selectedDate === date) return '#FF6B35' + '15';
+    return 'transparent';
   };
 
   return (
-    <View style={styles.wrapper}>
-      {/* 年月表示 */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev - 1)}>
-          <Text style={styles.arrow}>{'＜'}</Text>
-        </TouchableOpacity>
-        <Text style={styles.range}>{startOfWeek.format('YYYY年M月')}</Text>
-        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev + 1)}>
-          <Text style={styles.arrow}>{'＞'}</Text>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { opacity: fadeAnim }
+      ]}
+    >
+      <View style={styles.headerContent}>
+        <View style={styles.monthSelector}>
+          <TouchableOpacity 
+            style={styles.monthButton}
+            onPress={handlePrevWeek}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons 
+              name="chevron-left" 
+              size={24} 
+              color={textColor} 
+            />
+          </TouchableOpacity>
+          
+          <Text style={[styles.monthText, { color: textColor }]}> 
+            {currentWeek.format('YYYY年M月')}
+          </Text>
+          
+          <TouchableOpacity 
+            style={styles.monthButton}
+            onPress={handleNextWeek}
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons 
+              name="chevron-right" 
+              size={24} 
+              color={textColor} 
+            />
+          </TouchableOpacity>
+        </View>
+        
+        <TouchableOpacity 
+          style={[styles.todayButton, { backgroundColor: '#4ECDC4' + '15' }]}
+          onPress={scrollToToday}
+          activeOpacity={0.7}
+        >
+          <MaterialCommunityIcons 
+            name="calendar-today" 
+            size={16} 
+            color="#4ECDC4" 
+          />
         </TouchableOpacity>
       </View>
 
-      {/* 日付セル */}
-      <View style={styles.row}>
-        {dates.map((item) => {
-          const isSelected = item.full === selectedDate;
+      <View style={styles.dateContainer}>
+        {dates.map((date, index) => {
+          const dayLabel = getDayLabel(date);
+          const dateColor = getDateColor(date);
+          const backgroundColor = getDateBackgroundColor(date);
+          const isSelected = selectedDate === date;
+          const targetDate = dayjs(date);
+          
           return (
-            <View
-              key={item.full}
-              style={{
-                flex: isSelected ? 1.1 : 0.98,
-                alignItems: 'center',
-              }}
+            <TouchableOpacity
+              key={date}
+              style={[
+                styles.dateItem,
+                { backgroundColor },
+                isSelected && styles.selectedDateItem
+              ]}
+              onPress={() => setSelectedDate(date)}
+              activeOpacity={0.7}
             >
-              <DateCell
-                label={item.label}
-                weekday={item.weekday}
-                isSelected={isSelected}
-                onPress={() => handleSelect(item.full)}
-              />
-            </View>
+              <Text style={[styles.dayLabel, { color: dateColor }]}> 
+                {dayLabel}
+              </Text>
+              <Text style={[styles.dateNumber, { color: dateColor }]}> 
+                {targetDate.date()}
+              </Text>
+            </TouchableOpacity>
           );
         })}
       </View>
-    </View>
+    </Animated.View>
   );
-}
-
-const ORANGE = '#FF7043';
+};
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingTop: 10,
-    paddingBottom: 4,
-    marginHorizontal: -24, // ← SafeAreaView の padding: 24 を相殺
+  container: {
+    marginBottom: 12,
   },
-  header: {
+  headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
   },
-  arrow: {
-    fontSize: 20,
-    color: ORANGE,
-    paddingHorizontal: 8,
-  },
-  range: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#555',
-  },
-  row: {
+  monthSelector: {
     flexDirection: 'row',
-    paddingHorizontal: 4,
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  monthButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  monthText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    minWidth: 100,
+    textAlign: 'center',
+  },
+  todayButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 20,
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    gap: 8,
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  dateItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+    borderRadius: 10,
+    paddingVertical: 6,
+  },
+  selectedDateItem: {
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+  },
+  dayLabel: {
+    fontSize: 9,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  dateNumber: {
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
+
+export default DateSelector;
