@@ -41,7 +41,7 @@ const AnimatedDateChip: React.FC<Props> = ({ date, selected, onPress }) => {
         selected={selected}
         onPress={onPress}
         style={[styles.chip, selected && styles.selectedChip]}
-        textStyle={[styles.chipText, selected && styles.selectedText]}
+        textStyle={[styles.chipText, { fontFamily: 'NotoSansJP-Medium' }, selected && styles.selectedText]}
       >
         {`${dayjs(date).format('D')} ${dayjs(date).format('ddd')}`}
       </Chip>

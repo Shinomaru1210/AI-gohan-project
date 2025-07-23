@@ -21,11 +21,11 @@ export function ThemedText({
     <Text
       style={[
         { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
+        type === 'default' ? [styles.default, { fontFamily: 'NotoSansJP-Regular' }] : undefined,
+        type === 'title' ? [styles.title, { fontFamily: 'NotoSansJP-Bold' }] : undefined,
+        type === 'defaultSemiBold' ? [styles.defaultSemiBold, { fontFamily: 'NotoSansJP-SemiBold' }] : undefined,
+        type === 'subtitle' ? [styles.subtitle, { fontFamily: 'NotoSansJP-Medium' }] : undefined,
+        type === 'link' ? [styles.link, { fontFamily: 'NotoSansJP-Regular' }] : undefined,
         style,
       ]}
       {...rest}

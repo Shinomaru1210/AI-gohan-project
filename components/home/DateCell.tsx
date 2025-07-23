@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Props = {
   label: string; // 日付（例："02"）
@@ -20,8 +20,8 @@ export default function DateCell({ label, weekday, isSelected, onPress }: Props)
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Text style={[styles.dateText, isSelected && styles.selectedText]}>{label}</Text>
-      <Text style={[styles.weekText, isSelected && styles.selectedText]}>{weekday}</Text>
+      <Text style={[styles.dateText, isSelected && styles.selectedText, { fontFamily: 'NotoSansJP-Bold' }]}>{label}</Text>
+      <Text style={[styles.weekText, isSelected && styles.selectedText, { fontFamily: 'NotoSansJP-Regular' }]}>{weekday}</Text>
     </TouchableOpacity>
   );
 }

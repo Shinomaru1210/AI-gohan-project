@@ -43,9 +43,9 @@ export default function TabLayout() {
           backgroundColor: backgroundColor,
           borderTopColor: '#E9ECEF',
           borderTopWidth: 1,
-          height: 65,
+          height: 90,
           paddingTop: 8,
-          paddingBottom: 8,
+          paddingBottom: 0,
           paddingLeft: 24,
           paddingRight: 24,
           shadowColor: '#000',
@@ -61,6 +61,7 @@ export default function TabLayout() {
           fontSize: 11,
           fontWeight: '500',
           marginTop: 4,
+          fontFamily: 'NotoSansJP-Medium',
         },
         headerStyle: {
           backgroundColor: backgroundColor,
@@ -68,6 +69,7 @@ export default function TabLayout() {
         headerTintColor: textColor,
         headerTitleStyle: {
           fontWeight: 'bold',
+          fontFamily: 'NotoSansJP-Bold',
         },
         headerShown: false,
       })}

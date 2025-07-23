@@ -125,49 +125,49 @@ export default function FridgeScreen() {
       <TouchableOpacity activeOpacity={0.8} onPress={() => router.push({ pathname: `/fridge/detail/${item.id}` } as any)}>
         <Surface style={[styles.itemCard, isExpired ? { backgroundColor: '#FFEBEE' } : {}, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF', marginVertical: 4, borderRadius: 14, elevation: 1 }]} elevation={2}>
           <View style={[styles.itemContent, { borderRadius: 14 }] }>
-            <View style={styles.itemLeft}>
-              {item.image ? (
-                <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 8, marginRight: 12 }} />
-              ) : (
-                <View style={[styles.iconContainer, { backgroundColor: categoryColor + '20' }]}> 
-                  <MaterialCommunityIcons 
-                    name={getCategoryIcon(item.category) as any} 
-                    size={20} 
-                    color={categoryColor} 
-                  />
-                </View>
-              )}
-              <View style={styles.itemInfo}>
+          <View style={styles.itemLeft}>
+            {item.image ? (
+              <Image source={{ uri: item.image }} style={{ width: 40, height: 40, borderRadius: 8, marginRight: 12 }} />
+            ) : (
+              <View style={[styles.iconContainer, { backgroundColor: categoryColor + '20' }]}> 
+                <MaterialCommunityIcons 
+                  name={getCategoryIcon(item.category) as any} 
+                  size={20} 
+                  color={categoryColor} 
+                />
+              </View>
+            )}
+            <View style={styles.itemInfo}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
                   <Text style={[styles.itemName, { color: textColor, flexShrink: 1 }]} numberOfLines={1}>{item.name}</Text>
                   {detailText ? (
                     <Text style={{ color: '#222', fontSize: 14, marginLeft: 8, textAlign: 'right', minWidth: 48 }}>{detailText}</Text>
                   ) : <View style={{ minWidth: 48 }} />}
                 </View>
-                <View style={styles.itemMeta}>
-                  <Chip 
-                    style={[styles.categoryChip, { backgroundColor: categoryColor + '15' }]}
-                    textStyle={{ color: categoryColor, fontSize: 11 }}
-                    compact
-                  >
-                    {item.category}
-                  </Chip>
-                  {item.expiry && (
-                    <Text style={[styles.expiryText, { color: isExpired ? '#E74C3C' : isExpiringSoon ? '#FF9800' : textSecondaryColor, fontWeight: isExpired ? 'bold' : 'normal' }]}> 
-                      {isExpired ? '期限切れ ' : isExpiringSoon ? '⚠️ ' : ''}{item.expiry}
-                    </Text>
-                  )}
-                </View>
+              <View style={styles.itemMeta}>
+                <Chip 
+                  style={[styles.categoryChip, { backgroundColor: categoryColor + '15' }]}
+                  textStyle={{ color: categoryColor, fontSize: 11 }}
+                  compact
+                >
+                  {item.category}
+                </Chip>
+                {item.expiry && (
+                  <Text style={[styles.expiryText, { color: isExpired ? '#E74C3C' : isExpiringSoon ? '#FF9800' : textSecondaryColor, fontWeight: isExpired ? 'bold' : 'normal' }]}> 
+                    {isExpired ? '期限切れ ' : isExpiringSoon ? '⚠️ ' : ''}{item.expiry}
+                  </Text>
+                )}
               </View>
             </View>
-            <IconButton
-              icon="delete-outline"
-              size={20}
-              onPress={() => handleDelete(item.id)}
-              iconColor={textSecondaryColor}
-            />
           </View>
-        </Surface>
+          <IconButton
+            icon="delete-outline"
+            size={20}
+            onPress={() => handleDelete(item.id)}
+            iconColor={textSecondaryColor}
+          />
+        </View>
+      </Surface>
       </TouchableOpacity>
     );
   };

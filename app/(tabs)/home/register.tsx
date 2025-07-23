@@ -122,7 +122,7 @@ export default function RegisterMealScreen() {
               color={iconColor}
             />
           </View>
-          <Text style={[styles.title, { color: textColor }]}>{type} の記録</Text>
+          <Text style={[styles.title, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>{type} の記録</Text>
         </View>
         <View style={{ width: 48 }} />
       </View>
@@ -135,21 +135,21 @@ export default function RegisterMealScreen() {
         {/* 日付表示 */}
         <Surface style={[styles.dateCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
           <MaterialCommunityIcons name="calendar" size={20} color={iconColor} />
-          <Text style={[styles.dateText, { color: textColor }]}>
+          <Text style={[styles.dateText, { color: textColor, fontFamily: 'NotoSansJP-Regular' }]}>
             {date ? dayjs(date).format('YYYY年M月D日') : ''}
           </Text>
         </Surface>
 
         {/* 食事内容入力（1品ずつ追加） */}
         <Surface style={[styles.inputCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>食べたもの</Text>
+          <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>食べたもの</Text>
           <View style={styles.addRow}>
             <TextInput
               mode="outlined"
               value={itemInput}
               onChangeText={setItemInput}
               placeholder="例：味噌汁"
-              style={[styles.textInput, { flex: 1 }]}
+              style={[styles.textInput, { flex: 1, fontFamily: 'NotoSansJP-Regular' }]}
               outlineColor="#E9ECEF"
               activeOutlineColor={iconColor}
               onSubmitEditing={handleAddItem}
@@ -168,7 +168,7 @@ export default function RegisterMealScreen() {
             <View style={styles.itemList}>
               {items.map((item, idx) => (
                 <View key={idx} style={styles.itemRow}>
-                  <Text style={[styles.itemText, { color: textColor }]}>{item}</Text>
+                  <Text style={[styles.itemText, { color: textColor, fontFamily: 'NotoSansJP-Regular' }]}>{item}</Text>
                   <TouchableOpacity onPress={() => handleRemoveItem(idx)} style={styles.removeButton}>
                     <MaterialCommunityIcons name="close" size={18} color="#E74C3C" />
                   </TouchableOpacity>
@@ -180,7 +180,7 @@ export default function RegisterMealScreen() {
 
         {/* 分類選択 */}
         <Surface style={[styles.inputCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>分類</Text>
+          <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>分類</Text>
           <View style={styles.chipRow}>
             {mealTypes.map((mealType) => (
               <TouchableOpacity

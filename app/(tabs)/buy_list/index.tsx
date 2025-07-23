@@ -2,7 +2,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Animated, TextInput as RNTextInput, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, TextInput as RNTextInput, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Chip, IconButton, Surface } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -176,10 +176,10 @@ export default function BuyListScreen() {
 
   // カテゴリごとにグループ化
   const categories = ['野菜', '肉類', '乳製品', '主食', '調味料', 'その他'] as const;
+  // checked/un-checked分岐をやめ、全て表示
   const grouped = categories.map(cat => ({
     label: cat,
-    items: items.filter(i => i.category === cat && !i.checked),
-    checked: items.filter(i => i.category === cat && i.checked),
+    items: items.filter(i => i.category === cat),
   }));
 
   const categoryMeta = {
@@ -189,6 +189,18 @@ export default function BuyListScreen() {
     '主食': { color: '#9C27B0', icon: 'rice' },
     '調味料': { color: '#FF9800', icon: 'bottle-tonic' },
     'その他': { color: '#607D8B', icon: 'food' },
+  };
+
+  // メモ一括削除の確認
+  const handleClearMemos = () => {
+    Alert.alert(
+      '確認',
+      '本当に全てのメモを消しますか？',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        { text: 'OK', style: 'destructive', onPress: () => setItems(prev => prev.map(item => ({ ...item, memo: '' }))) },
+      ]
+    );
   };
 
   return (
@@ -222,30 +234,52 @@ export default function BuyListScreen() {
                 ))
               )}
             </View>
-            {/* チェック済み */}
-            {section.checked.length > 0 && (
-              <View style={{ marginTop: 10, backgroundColor: '#F5F5F5', borderRadius: 12, padding: 8 }}>
-                <Text style={{ fontSize: 13, color: '#888', marginBottom: 4 }}>完了</Text>
-                {section.checked.map(item => (
-                  <View key={item.id} style={{ marginBottom: 8 }}>
-                    {renderItem({ item })}
-                  </View>
-                ))}
-              </View>
-            )}
           </View>
         ))}
       </ScrollView>
-      <Animated.View style={{ transform: [{ scale: scaleAnim }], marginTop: 8 }}>
-        <TouchableOpacity 
-          style={[styles.addButton, { backgroundColor: '#FF6B35', borderRadius: 16 }]} 
-          onPress={handleAdd}
-          activeOpacity={0.8}
-        >
-          <MaterialCommunityIcons name="plus" size={24} color="white" />
-          <Text style={styles.addButtonText}>食材を追加</Text>
-        </TouchableOpacity>
-      </Animated.View>
+      {/* ボタン2つを横並びで配置（大きさ固定） */}
+      {/* タブバー上に仕切り線を追加 */}
+      <View style={{ height: 1, backgroundColor: '#E9ECEF', marginHorizontal: 0, marginBottom: 0 }} />
+      <View style={{ flexDirection: 'row', gap: 12, paddingHorizontal: 20, marginBottom: 0, marginTop: 8 }}>
+        <Animated.View style={{ flex: 1, transform: [{ scale: scaleAnim }] }}>
+          <TouchableOpacity 
+            style={{
+              height: 56,
+              width: '100%',
+              backgroundColor: '#FF6B35',
+              borderRadius: 16,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+            onPress={handleAdd}
+            activeOpacity={0.8}
+          >
+            <MaterialCommunityIcons name="plus" size={24} color="white" />
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>食材を追加</Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            style={{
+              height: 56,
+              width: '100%',
+              backgroundColor: '#B0BEC5',
+              borderRadius: 16,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+            }}
+            onPress={handleClearMemos}
+            activeOpacity={0.85}
+          >
+            <MaterialCommunityIcons name="notebook-remove-outline" size={20} color="#fff" />
+            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>メモを消す</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

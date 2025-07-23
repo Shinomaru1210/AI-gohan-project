@@ -114,10 +114,10 @@ export default function HomeScreen() {
       >
         <View style={styles.mealsContainer}>
           {(Object.keys(defaultMeals) as MealType[]).map((type, index) => {
-            const entry = currentMeals[type];
+          const entry = currentMeals[type];
             const iconColor = mealTypeToColor[type];
 
-            return (
+          return (
               <Animated.View
                 key={type}
                 style={[
@@ -129,17 +129,17 @@ export default function HomeScreen() {
                   <View style={styles.mealHeader}>
                     <View style={styles.mealIconContainer}>
                       <View style={[styles.iconBackground, { backgroundColor: iconColor + '20' }]}>
-                        <MaterialCommunityIcons
-                          name={mealTypeToIcon[type]}
+                  <MaterialCommunityIcons
+                    name={mealTypeToIcon[type]}
                           size={24}
                           color={iconColor}
                         />
                       </View>
-                      <Text style={[styles.mealTitle, { color: textColor }]}>{type}</Text>
+                      <Text style={[styles.mealTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>{type}</Text>
                     </View>
                     <TouchableOpacity
                       style={[styles.addButton, { backgroundColor: iconColor }]}
-                      onPress={() => handleRegister(type)}
+                    onPress={() => handleRegister(type)}
                       activeOpacity={0.8}
                     >
                       <MaterialCommunityIcons name="plus" size={20} color="white" />
@@ -147,10 +147,10 @@ export default function HomeScreen() {
                   </View>
                   
                   <View style={styles.mealContent}>
-                    {entry ? (
-                      <>
-                        <Text style={[styles.contentText, { color: textColor }]}>{entry.content}</Text>
-                        <View style={styles.chipRow}>
+                {entry ? (
+                  <>
+                        <Text style={[styles.contentText, { color: textColor, fontFamily: 'NotoSansJP-Regular' }]}>{entry.content}</Text>
+                    <View style={styles.chipRow}>
                           {entry.kind && (
                             <Chip 
                               style={[styles.chip, { backgroundColor: iconColor + '15' }]}
@@ -159,33 +159,33 @@ export default function HomeScreen() {
                               {entry.kind}
                             </Chip>
                           )}
-                          {entry.calories && (
+                      {entry.calories && (
                             <Chip 
                               style={[styles.chip, { backgroundColor: '#4CAF50' + '15' }]}
                               textStyle={{ color: '#4CAF50' }}
                             >
                               {entry.calories} kcal
                             </Chip>
-                          )}
-                        </View>
-                      </>
-                    ) : (
+                      )}
+                    </View>
+                  </>
+                ) : (
                       <View style={styles.emptyState}>
                         <MaterialCommunityIcons
                           name="food-variant-off"
                           size={32}
                           color={textSecondaryColor}
                         />
-                        <Text style={[styles.placeholder, { color: textSecondaryColor }]}>
+                        <Text style={[styles.placeholder, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>
                           まだ記録がありません
                         </Text>
                       </View>
-                    )}
+                )}
                   </View>
                 </Surface>
               </Animated.View>
-            );
-          })}
+          );
+        })}
         </View>
 
         <TouchableOpacity
@@ -196,7 +196,7 @@ export default function HomeScreen() {
           }}
         >
           <MaterialCommunityIcons name="share-variant" size={20} color="white" />
-          <Text style={styles.shareButtonText}>みんなと共有する</Text>
+          <Text style={[styles.shareButtonText, { fontFamily: 'NotoSansJP-Bold' }]}>みんなと共有する</Text>
         </TouchableOpacity>
 
         <View style={styles.sectionHeader}>
@@ -205,8 +205,8 @@ export default function HomeScreen() {
               <MaterialCommunityIcons name="account-group" size={20} color="#FF6B35" />
             </View>
             <View>
-              <Text style={[styles.sectionTitle, { color: textColor }]}>みんなのごはん</Text>
-              <Text style={[styles.sectionSubtitle, { color: textSecondaryColor }]}>友達の食事をチェック</Text>
+              <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>みんなのごはん</Text>
+              <Text style={[styles.sectionSubtitle, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>友達の食事をチェック</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -214,7 +214,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
             onPress={() => router.push('/home/feed-list')}
           >
-            <Text style={[styles.moreButtonText, { color: '#FF6B35' }]}>もっと見る</Text>
+            <Text style={[styles.moreButtonText, { color: '#FF6B35', fontFamily: 'NotoSansJP-Medium' }]}>もっと見る</Text>
             <MaterialCommunityIcons 
               name="chevron-right" 
               size={16} 
@@ -240,51 +240,54 @@ export default function HomeScreen() {
                 style={{ borderRadius: 16 }}
               >
                 <Surface style={[styles.feedCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={2}>
-                  <View style={styles.feedHeader}>
+              <View style={styles.feedHeader}>
                     <View style={styles.userSection}>
                       <Image source={{ uri: item.icon }} style={{ width: 36, height: 36, borderRadius: 18, marginRight: 8, backgroundColor: '#eee' }} />
                       <View style={styles.feedUserInfo}>
-                        <Text style={[styles.feedUser, { color: textColor }]}>{item.user} <Text style={{ fontSize: 13, color: '#888' }}>{item.age}歳</Text></Text>
+                        <Text style={[styles.feedUser, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>{item.user} <Text style={{ fontSize: 13, color: '#888', fontFamily: 'NotoSansJP-Regular' }}>{item.age}歳</Text></Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                           <MaterialCommunityIcons name="calendar" size={12} color={textSecondaryColor} />
-                          <Text style={[styles.feedTime, { color: textSecondaryColor }]}>{item.date}</Text>
+                          <Text style={[styles.feedTime, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>{item.date}</Text>
                           <MaterialCommunityIcons name="clock-outline" size={12} color={textSecondaryColor} style={{ marginLeft: 8 }} />
-                          <Text style={[styles.feedTime, { color: textSecondaryColor }]}>{item.time}</Text>
+                          <Text style={[styles.feedTime, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>{item.time}</Text>
                         </View>
                       </View>
-                    </View>
+                </View>
                     <TouchableOpacity 
                       style={[styles.likeButton, { backgroundColor: item.liked ? '#E74C3C' + '15' : 'transparent' }]}
                       onPress={() => handleLike(item.id)}
                       activeOpacity={0.7}
                     >
-                      <MaterialCommunityIcons
-                        name={item.liked ? 'heart' : 'heart-outline'}
+                    <MaterialCommunityIcons
+                      name={item.liked ? 'heart' : 'heart-outline'}
                         size={18}
                         color={item.liked ? '#E74C3C' : textSecondaryColor}
-                      />
-                      <Text style={[styles.likeCount, { color: item.liked ? '#E74C3C' : textSecondaryColor }]}>
+                    />
+                      <Text style={[styles.likeCount, { color: item.liked ? '#E74C3C' : textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>
                         {item.likes}
                       </Text>
-                    </TouchableOpacity>
+                  </TouchableOpacity>
                   </View>
                   <View style={styles.feedContent}>
-                    <Text style={[styles.feedContentText, { color: textColor }]}>{item.content}</Text>
+                    <Text style={[styles.feedContentText, { color: textColor, fontFamily: 'NotoSansJP-Regular' }]}>{item.content}</Text>
                     <View style={styles.feedTags}>
                       <View style={[styles.tag, { backgroundColor: '#4CAF50' + '15' }]}>
-                        <Text style={[styles.tagText, { color: '#4CAF50' }]}>和食</Text>
+                        <Text style={[styles.tagText, { color: '#4CAF50', fontFamily: 'NotoSansJP-Medium' }]}>和食</Text>
                       </View>
                       <View style={[styles.tag, { backgroundColor: '#2196F3' + '15' }]}>
-                        <Text style={[styles.tagText, { color: '#2196F3' }]}>ヘルシー</Text>
+                        <Text style={[styles.tagText, { color: '#2196F3', fontFamily: 'NotoSansJP-Medium' }]}>ヘルシー</Text>
                       </View>
-                    </View>
-                  </View>
+                </View>
+              </View>
                 </Surface>
               </TouchableOpacity>
             </Animated.View>
           ))}
         </View>
       </ScrollView>
+      <Text style={{ fontSize: 32, color: '#FF6B35', fontFamily: 'NotoSansJP-Regular', margin: 16 }}>
+        髙 﨑 𠮷 ← これらが綺麗に表示されればNotoSansJPが効いています
+      </Text>
     </SafeAreaView>
   );
 }
