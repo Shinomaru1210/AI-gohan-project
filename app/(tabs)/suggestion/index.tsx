@@ -64,18 +64,19 @@ export default function SuggestionScreen() {
         <View style={{ backgroundColor: '#FFF3E6', borderRadius: 32, padding: 10, marginBottom: 8, shadowColor: '#FF6B35', shadowOpacity: 0.12, shadowRadius: 8, elevation: 2 }}>
           <MaterialCommunityIcons name="chef-hat" size={48} color="#FF6B35" />
         </View>
-        <Text style={{ color: '#FF6B35', fontSize: 20, fontWeight: 'bold', marginBottom: 0, letterSpacing: 1 }}>今日のごはん、何にしよう？</Text>
+        {/* 見出し・セクションタイトル */}
+        <Text style={{ color: '#FF6B35', fontSize: 20, fontFamily: 'NotoSansJP-Bold', marginBottom: 0, letterSpacing: 1 }}>今日のごはん、何にしよう？</Text>
       </View>
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
         <View style={{ backgroundColor: '#fff', borderRadius: 24, marginHorizontal: 16, marginBottom: 18, padding: 18, shadowColor: '#FF6B35', shadowOpacity: 0.10, shadowRadius: 12, elevation: 4, borderWidth: 1, borderColor: '#FFE0CC' }}>
           {/* 料理の種類 */}
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>料理の種類</Text>
+          <Text style={{ fontFamily: 'NotoSansJP-Bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>料理の種類</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
             {foodTypes.map(type => (
               <Chip
                 key={type}
                 style={{ backgroundColor: selectedType === type ? '#FF6B35' : '#FFF3E6', borderRadius: 18, marginRight: 6, marginBottom: 6, elevation: selectedType === type ? 2 : 0, shadowColor: '#FF6B35' }}
-                textStyle={{ color: selectedType === type ? '#fff' : '#FF6B35', fontWeight: 'bold', fontSize: 14, letterSpacing: 1 }}
+                textStyle={{ color: selectedType === type ? '#fff' : '#FF6B35', fontFamily: 'NotoSansJP-Bold', fontSize: 14, letterSpacing: 1 }}
                 selected={selectedType === type}
                 onPress={() => setSelectedType(type)}
                 compact
@@ -86,13 +87,13 @@ export default function SuggestionScreen() {
           </View>
           <View style={{ height: 1, backgroundColor: '#FFE0CC', marginVertical: 8, borderRadius: 1 }} />
           {/* 提案タイプ */}
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>提案タイプ</Text>
+          <Text style={{ fontFamily: 'NotoSansJP-Bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>提案タイプ</Text>
           <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
             {modeOptions.map(opt => (
               <Chip
                 key={opt.key}
                 style={{ backgroundColor: suggestionMode === opt.key ? '#FF6B35' : '#FFF3E6', borderRadius: 18, marginRight: 6, elevation: suggestionMode === opt.key ? 2 : 0, shadowColor: '#FF6B35' }}
-                textStyle={{ color: suggestionMode === opt.key ? '#fff' : '#FF6B35', fontWeight: 'bold', fontSize: 14, letterSpacing: 1 }}
+                textStyle={{ color: suggestionMode === opt.key ? '#fff' : '#FF6B35', fontFamily: 'NotoSansJP-Bold', fontSize: 14, letterSpacing: 1 }}
                 selected={suggestionMode === opt.key}
                 onPress={() => setSuggestionMode(opt.key as any)}
                 compact
@@ -103,7 +104,7 @@ export default function SuggestionScreen() {
           </View>
           <View style={{ height: 1, backgroundColor: '#FFE0CC', marginVertical: 8, borderRadius: 1 }} />
           {/* キーワード入力 */}
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>キーワード</Text>
+          <Text style={{ fontFamily: 'NotoSansJP-Bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>キーワード</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF3E6', borderRadius: 14, paddingHorizontal: 10, marginBottom: 16, borderWidth: 1, borderColor: '#FFE0CC' }}>
             <MaterialCommunityIcons name="magnify" size={20} color="#FF6B35" />
             <TextInput
@@ -116,9 +117,9 @@ export default function SuggestionScreen() {
           </View>
           <View style={{ height: 1, backgroundColor: '#FFE0CC', marginVertical: 8, borderRadius: 1 }} />
           {/* 簡単さ加減 */}
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>簡単さ</Text>
+          <Text style={{ fontFamily: 'NotoSansJP-Bold', fontSize: 16, marginBottom: 8, color: textColor, letterSpacing: 1 }}>簡単さ</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <Text style={{ color: '#FF6B35', fontWeight: 'bold', fontSize: 13, width: 36, textAlign: 'right' }}>簡単</Text>
+            <Text style={{ color: '#FF6B35', fontFamily: 'NotoSansJP-Bold', fontSize: 13, width: 36, textAlign: 'right' }}>簡単</Text>
             <Slider
               style={{ flex: 1, height: 32 }}
               minimumValue={1}
@@ -130,8 +131,8 @@ export default function SuggestionScreen() {
               maximumTrackTintColor="#FFD6C2"
               thumbTintColor="#FF6B35"
             />
-            <Text style={{ color: '#FF6B35', fontWeight: 'bold', fontSize: 16 }}>{easyLevel}</Text>
-            <Text style={{ color: '#FF6B35', fontWeight: 'bold', fontSize: 13, width: 36, textAlign: 'left' }}>本格</Text>
+            <Text style={{ color: '#FF6B35', fontFamily: 'NotoSansJP-Bold', fontSize: 16 }}>{easyLevel}</Text>
+            <Text style={{ color: '#FF6B35', fontFamily: 'NotoSansJP-Bold', fontSize: 13, width: 36, textAlign: 'left' }}>本格</Text>
           </View>
           <View style={{ height: 1, backgroundColor: '#FFE0CC', marginVertical: 8, borderRadius: 1 }} />
           {/* 冷蔵庫にあるもので作る */}
@@ -141,7 +142,7 @@ export default function SuggestionScreen() {
               onPress={() => setFridgeOnly(v => !v)}
               color="#FF6B35"
             />
-            <Text style={{ color: textColor, fontSize: 15, fontWeight: 'bold' }}>冷蔵庫にあるもので作る</Text>
+            <Text style={{ color: textColor, fontSize: 15, fontFamily: 'NotoSansJP-Bold' }}>冷蔵庫にあるもので作る</Text>
           </View>
         </View>
       </ScrollView>
@@ -173,7 +174,7 @@ export default function SuggestionScreen() {
               color="white" 
               style={{ marginRight: 8 }}
             />
-            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', letterSpacing: 1 }}>{isLoading ? '提案中...' : '献立を提案する'}</Text>
+            <Text style={{ color: 'white', fontSize: 16, fontFamily: 'NotoSansJP-Bold', letterSpacing: 1 }}>{isLoading ? '提案中...' : '献立を提案する'}</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

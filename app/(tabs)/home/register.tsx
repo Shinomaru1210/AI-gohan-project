@@ -200,7 +200,7 @@ export default function RegisterMealScreen() {
                 />
                 <Text style={[
                   styles.chipText,
-                  { color: selectedKind === mealType.id ? mealType.color : textColor }
+                  { color: selectedKind === mealType.id ? mealType.color : textColor, fontFamily: 'NotoSansJP-Regular' }
                 ]}>
                   {mealType.label}
                 </Text>
@@ -211,7 +211,7 @@ export default function RegisterMealScreen() {
 
         {/* カロリー入力 */}
         <Surface style={[styles.inputCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>カロリー</Text>
+          <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>カロリー</Text>
           <View style={styles.calorieInput}>
             <TextInput
               mode="outlined"
@@ -223,21 +223,21 @@ export default function RegisterMealScreen() {
               outlineColor="#E9ECEF"
               activeOutlineColor={iconColor}
             />
-            <Text style={[styles.calorieUnit, { color: textSecondaryColor }]}>kcal</Text>
+            <Text style={[styles.calorieUnit, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>kcal</Text>
             <TouchableOpacity
               style={{ marginLeft: 8, backgroundColor: iconColor, borderRadius: 8, paddingVertical: 8, paddingHorizontal: 12 }}
               onPress={() => setCalories('350')}
               activeOpacity={0.8}
             >
               <MaterialCommunityIcons name="robot" size={18} color="#fff" />
-              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 13, marginLeft: 4 }}>AIカロリー推定</Text>
+              <Text style={{ color: '#fff', fontSize: 13, marginLeft: 4, fontFamily: 'NotoSansJP-Bold' }}>AIカロリー推定</Text>
             </TouchableOpacity>
           </View>
         </Surface>
 
         {/* 写真追加 */}
         <Surface style={[styles.inputCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF' }]} elevation={1}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>写真</Text>
+          <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>写真</Text>
           <TouchableOpacity
             style={[styles.imageButton, { borderColor: '#E9ECEF' }]}
             onPress={pickImage}
@@ -248,7 +248,7 @@ export default function RegisterMealScreen() {
             ) : (
               <View style={styles.imagePlaceholder}>
                 <MaterialCommunityIcons name="camera-plus" size={32} color={textSecondaryColor} />
-                <Text style={[styles.imagePlaceholderText, { color: textSecondaryColor }]}>
+                <Text style={[styles.imagePlaceholderText, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>
                   写真を追加
                 </Text>
               </View>
@@ -270,7 +270,7 @@ export default function RegisterMealScreen() {
           activeOpacity={0.8}
         >
           <MaterialCommunityIcons name="content-save" size={20} color="white" />
-          <Text style={styles.saveButtonText}>保存する</Text>
+          <Text style={[styles.saveButtonText, { fontFamily: 'NotoSansJP-Bold' }]}>保存する</Text>
         </TouchableOpacity>
       </Animated.View>
     </SafeAreaView>
@@ -309,7 +309,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
   },
   content: {
     flex: 1,
@@ -329,7 +328,6 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
-    fontWeight: '600',
   },
   inputCard: {
     padding: 16,
@@ -339,7 +337,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
     marginBottom: 12,
   },
   textInput: {
@@ -362,7 +359,6 @@ const styles = StyleSheet.create({
   },
   chipText: {
     fontSize: 14,
-    fontWeight: '500',
   },
   calorieInput: {
     flexDirection: 'row',
@@ -371,7 +367,6 @@ const styles = StyleSheet.create({
   },
   calorieUnit: {
     fontSize: 16,
-    fontWeight: '600',
   },
   imageButton: {
     borderWidth: 2,
@@ -387,7 +382,6 @@ const styles = StyleSheet.create({
   },
   imagePlaceholderText: {
     fontSize: 14,
-    fontWeight: '500',
   },
   imagePreview: {
     width: '100%',
@@ -405,7 +399,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
   },
   addRow: {
     flexDirection: 'row',
@@ -434,7 +427,6 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 15,
-    fontWeight: '500',
   },
   removeButton: {
     marginLeft: 8,

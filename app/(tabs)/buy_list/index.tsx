@@ -129,7 +129,7 @@ export default function BuyListScreen() {
             </View>
             <View style={styles.itemInfo}>
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                <Text style={[styles.itemName, { color: textColor, flexShrink: 1 }]} numberOfLines={1}>{item.name}</Text>
+                <Text style={{ fontFamily: 'NotoSansJP-Regular', color: textColor, flexShrink: 1 }} numberOfLines={1}>{item.name}</Text>
                 {item.amount ? (
                   <Text style={{ color: '#222', fontSize: 14, marginLeft: 8, textAlign: 'right', minWidth: 48 }}>{item.amount}</Text>
                 ) : <View style={{ minWidth: 48 }} />}
@@ -206,8 +206,8 @@ export default function BuyListScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}> 
       <View style={[styles.header, { alignItems: 'center' }] }>
-        <Text style={[styles.title, { color: textColor, textAlign: 'center', letterSpacing: 2 }]}>SHOPPING</Text>
-        <Text style={[styles.subtitle, { color: textSecondaryColor, textAlign: 'center', marginTop: 2 }]}>{checkedCount}/{totalCount} 完了</Text>
+        <Text style={{ fontFamily: 'NotoSansJP-Regular', fontSize: 24, fontWeight: 'bold', marginBottom: 4, color: textColor, textAlign: 'center', letterSpacing: 2 }}>SHOPPING</Text>
+        <Text style={{ fontFamily: 'NotoSansJP-Regular', fontSize: 14, opacity: 0.8, color: textSecondaryColor, textAlign: 'center', marginTop: 2 }}>{checkedCount}/{totalCount} 完了</Text>
       </View>
       <ScrollView contentContainerStyle={styles.listContainer}>
         {grouped.map(section => (
@@ -217,7 +217,7 @@ export default function BuyListScreen() {
               <View style={{ backgroundColor: categoryMeta[section.label].color, borderRadius: 16, padding: 6, marginRight: 8 }}>
                 <MaterialCommunityIcons name={categoryMeta[section.label].icon as any} size={20} color="#fff" />
               </View>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: categoryMeta[section.label].color }}>{section.label}</Text>
+              <Text style={{ fontSize: 18, color: categoryMeta[section.label].color, fontFamily: 'NotoSansJP-Bold' }}>{section.label}</Text>
             </View>
             {/* セクション全体をカード風に */}
             <View style={{ backgroundColor: '#fff', borderRadius: 18, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2, minHeight: 80 }}>
@@ -295,7 +295,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 4,
   },
   subtitle: {
@@ -362,6 +361,5 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: '600',
   },
 }); 

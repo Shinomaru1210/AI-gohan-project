@@ -142,7 +142,7 @@ export default function HomeScreen() {
                     onPress={() => handleRegister(type)}
                       activeOpacity={0.8}
                     >
-                      <MaterialCommunityIcons name="plus" size={20} color="white" />
+                      <MaterialCommunityIcons name="plus" size={16} color="white" />
                     </TouchableOpacity>
                   </View>
                   
@@ -154,7 +154,7 @@ export default function HomeScreen() {
                           {entry.kind && (
                             <Chip 
                               style={[styles.chip, { backgroundColor: iconColor + '15' }]}
-                              textStyle={{ color: iconColor }}
+                              textStyle={{ color: iconColor, fontFamily: 'NotoSansJP-Medium' }}
                             >
                               {entry.kind}
                             </Chip>
@@ -162,7 +162,7 @@ export default function HomeScreen() {
                       {entry.calories && (
                             <Chip 
                               style={[styles.chip, { backgroundColor: '#4CAF50' + '15' }]}
-                              textStyle={{ color: '#4CAF50' }}
+                              textStyle={{ color: '#4CAF50', fontFamily: 'NotoSansJP-Medium' }}
                             >
                               {entry.calories} kcal
                             </Chip>
@@ -195,29 +195,26 @@ export default function HomeScreen() {
             // 今後: 共有機能へ
           }}
         >
-          <MaterialCommunityIcons name="share-variant" size={20} color="white" />
+          <MaterialCommunityIcons name="share-variant" size={14} color="white" />
           <Text style={[styles.shareButtonText, { fontFamily: 'NotoSansJP-Bold' }]}>みんなと共有する</Text>
         </TouchableOpacity>
 
         <View style={styles.sectionHeader}>
           <View style={styles.sectionTitleContainer}>
-            <View style={[styles.sectionIcon, { backgroundColor: '#FF6B35' + '20' }]}>
+            <View style={[styles.sectionIcon, { backgroundColor: '#FF6B35' + '20' }]}> 
               <MaterialCommunityIcons name="account-group" size={20} color="#FF6B35" />
             </View>
-            <View>
-              <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>みんなのごはん</Text>
-              <Text style={[styles.sectionSubtitle, { color: textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>友達の食事をチェック</Text>
-            </View>
+            <Text style={[styles.sectionTitle, { color: textColor, fontFamily: 'NotoSansJP-Bold' }]}>みんなのごはん</Text>
           </View>
           <TouchableOpacity
             style={styles.moreButton}
             activeOpacity={0.7}
             onPress={() => router.push('/home/feed-list')}
           >
-            <Text style={[styles.moreButtonText, { color: '#FF6B35', fontFamily: 'NotoSansJP-Medium' }]}>もっと見る</Text>
+            <Text style={[styles.moreButtonText, { color: '#FF6B35', fontFamily: 'NotoSansJP-Bold' }]}>もっと見る</Text>
             <MaterialCommunityIcons 
               name="chevron-right" 
-              size={16} 
+              size={16}
               color="#FF6B35" 
             />
           </TouchableOpacity>
@@ -263,7 +260,7 @@ export default function HomeScreen() {
                         size={18}
                         color={item.liked ? '#E74C3C' : textSecondaryColor}
                     />
-                      <Text style={[styles.likeCount, { color: item.liked ? '#E74C3C' : textSecondaryColor, fontFamily: 'NotoSansJP-Regular' }]}>
+                      <Text style={[styles.likeCount, { color: item.liked ? '#E74C3C' : textSecondaryColor, fontFamily: 'NotoSansJP-Medium' }]}>
                         {item.likes}
                       </Text>
                   </TouchableOpacity>
@@ -285,9 +282,6 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
-      <Text style={{ fontSize: 32, color: '#FF6B35', fontFamily: 'NotoSansJP-Regular', margin: 16 }}>
-        髙 﨑 𠮷 ← これらが綺麗に表示されればNotoSansJPが効いています
-      </Text>
     </SafeAreaView>
   );
 }
@@ -311,19 +305,19 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 32,
+    paddingHorizontal: 12, // 20→12
+    paddingBottom: 16, // 32→16
   },
   mealsContainer: {
-    gap: 16,
-    marginBottom: 24,
+    gap: 8, // 16→8
+    marginBottom: 12, // 24→12
   },
   mealCardContainer: {
-    borderRadius: 16,
+    borderRadius: 10, // 16→10
     overflow: 'hidden',
   },
   mealCard: {
-    borderRadius: 16,
+    borderRadius: 10, // 16→10
     borderWidth: 1,
     overflow: 'hidden',
   },
@@ -331,97 +325,95 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    paddingBottom: 12,
+    padding: 10, // 16→10
+    paddingBottom: 6, // 12→6
   },
   mealIconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 6, // 12→6
   },
   iconBackground: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32, // 40→32
+    height: 32, // 40→32
+    borderRadius: 16, // 20→16
     justifyContent: 'center',
     alignItems: 'center',
   },
   mealTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16, // 18→16
   },
   addButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 22, // 28→22
+    height: 22, // 28→22
+    borderRadius: 11, // 14→11
     justifyContent: 'center',
     alignItems: 'center',
   },
   mealContent: {
-    padding: 16,
+    padding: 10, // 16→10
     paddingTop: 0,
   },
   contentText: {
-    fontSize: 16,
-    marginBottom: 12,
-    lineHeight: 22,
+    fontSize: 15, // 16→15
+    marginBottom: 6, // 12→6
+    lineHeight: 20, // 22→20
   },
   chipRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 4, // 8→4
     flexWrap: 'wrap',
   },
   chip: {
-    borderRadius: 12,
+    borderRadius: 8, // 12→8
   },
   emptyState: {
     alignItems: 'center',
-    paddingVertical: 20,
-    gap: 8,
+    paddingVertical: 10, // 20→10
+    gap: 4, // 8→4
   },
   placeholder: {
-    fontSize: 14,
+    fontSize: 13, // 14→13
     opacity: 0.7,
   },
   shareButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 12,
-    gap: 8,
-    marginBottom: 32,
+    paddingVertical: 6, // 8→6
+    borderRadius: 6, // 8→6
+    gap: 2, // 4→2
+    marginBottom: 12, // 16→12
   },
   shareButtonText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 16, // 13→16
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'space-between', // 追加
+    marginBottom: 0,
   },
   sectionTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 6,
   },
   sectionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 4,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 2,
+    fontSize: 16,
+    marginBottom: 0,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     opacity: 0.8,
   },
   moreButton: {
@@ -430,21 +422,23 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: 6,
+    marginLeft: 0, // alignSelf, marginLeft, marginBottom削除
+    marginBottom: 0,
   },
   moreButtonText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 15, // 11→15
+    fontFamily: 'NotoSansJP-Bold',
   },
   feed: {
-    gap: 16,
+    gap: 4, // 8→4
   },
   feedCardContainer: {
-    borderRadius: 16,
+    borderRadius: 6, // 10→6
     overflow: 'hidden',
   },
   feedCard: {
-    borderRadius: 16,
+    borderRadius: 6, // 10→6
     borderWidth: 1,
     overflow: 'hidden',
   },
@@ -452,8 +446,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
-    paddingBottom: 12,
+    padding: 6, // 10→6
+    paddingBottom: 2, // 6→2
   },
   userSection: {
     flexDirection: 'row',
@@ -461,61 +455,59 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   feedImage: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 28, // 36→28
+    height: 28, // 36→28
+    borderRadius: 14, // 18→14
     backgroundColor: '#f0f0f0',
+    marginRight: 4, // 追加
   },
   feedUserInfo: {
-    marginLeft: 12,
+    marginLeft: 4, // 6→4
     flex: 1,
   },
   feedUser: {
-    fontWeight: '600',
-    fontSize: 16,
-    marginBottom: 4,
+    fontSize: 13, // 15→13
+    marginBottom: 0, // 2→0
   },
   feedMeta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 1, // 2→1
   },
   feedTime: {
-    fontSize: 12,
+    fontSize: 10, // 11→10
   },
   likeButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    gap: 1, // 2→1
+    paddingHorizontal: 2, // 6→2
+    paddingVertical: 2, // 4→2
+    borderRadius: 8, // 12→8
   },
   likeCount: {
-    fontSize: 13,
-    fontWeight: '500',
+    fontSize: 10, // 12→10
   },
   feedContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingHorizontal: 6, // 10→6
+    paddingBottom: 6, // 10→6
   },
   feedContentText: {
-    fontSize: 15,
-    lineHeight: 22,
-    marginBottom: 12,
+    fontSize: 13, // 14→13
+    lineHeight: 16, // 18→16
+    marginBottom: 4, // 6→4
   },
   feedTags: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 2, // 4→2
     flexWrap: 'wrap',
   },
   tag: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 4, // 6→4
+    paddingVertical: 1, // 2→1
+    borderRadius: 6, // 8→6
   },
   tagText: {
-    fontSize: 11,
-    fontWeight: '500',
+    fontSize: 9, // 10→9
   },
 });

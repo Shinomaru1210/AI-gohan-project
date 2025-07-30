@@ -35,7 +35,7 @@ export default function FeedListScreen() {
   const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>みんなのごはん一覧</Text>
+      <Text style={[styles.title, { fontFamily: 'NotoSansJP-Bold' }]}>みんなのごはん一覧</Text>
       <ScrollView contentContainerStyle={styles.listContent}>
         {dummyFeed.map((item) => (
           <TouchableOpacity
@@ -48,18 +48,18 @@ export default function FeedListScreen() {
               <View style={styles.header}>
                 <Image source={{ uri: item.image }} style={styles.avatar} />
                 <View style={styles.userInfo}>
-                  <Text style={styles.user}>{item.user}</Text>
+                  <Text style={[styles.user, { fontFamily: 'NotoSansJP-Bold' }]}>{item.user}</Text>
                   <View style={styles.metaRow}>
                     <MaterialCommunityIcons name="clock-outline" size={12} color="#6C757D" />
-                    <Text style={styles.time}>{item.time}</Text>
+                    <Text style={[styles.time, { fontFamily: 'NotoSansJP-Regular' }]}>{item.time}</Text>
                   </View>
                 </View>
               </View>
-              <Text style={styles.content}>{item.content}</Text>
+              <Text style={[styles.content, { fontFamily: 'NotoSansJP-Regular' }]}>{item.content}</Text>
               <View style={styles.tagsRow}>
                 {item.tags.map((tag, idx) => (
                   <View key={idx} style={styles.tag}>
-                    <Text style={styles.tagText}>{tag}</Text>
+                    <Text style={[styles.tagText, { fontFamily: 'NotoSansJP-Medium' }]}>{tag}</Text>
                   </View>
                 ))}
               </View>
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
     marginTop: 24,
     marginBottom: 16,
     paddingHorizontal: 24,
@@ -111,7 +110,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   user: {
-    fontWeight: '600',
     fontSize: 16,
     marginBottom: 2,
   },
@@ -145,6 +143,5 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 11,
     color: '#4CAF50',
-    fontWeight: '500',
   },
 }); 

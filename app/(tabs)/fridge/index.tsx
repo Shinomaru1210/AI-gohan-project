@@ -139,21 +139,21 @@ export default function FridgeScreen() {
             )}
             <View style={styles.itemInfo}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                  <Text style={[styles.itemName, { color: textColor, flexShrink: 1 }]} numberOfLines={1}>{item.name}</Text>
+                  <Text style={[styles.itemName, { color: textColor, flexShrink: 1, fontFamily: 'NotoSansJP-Regular' }]} numberOfLines={1}>{item.name}</Text>
                   {detailText ? (
-                    <Text style={{ color: '#222', fontSize: 14, marginLeft: 8, textAlign: 'right', minWidth: 48 }}>{detailText}</Text>
+                    <Text style={{ color: '#222', fontSize: 14, marginLeft: 8, textAlign: 'right', minWidth: 48, fontFamily: 'NotoSansJP-Regular' }}>{detailText}</Text>
                   ) : <View style={{ minWidth: 48 }} />}
                 </View>
               <View style={styles.itemMeta}>
                 <Chip 
                   style={[styles.categoryChip, { backgroundColor: categoryColor + '15' }]}
-                  textStyle={{ color: categoryColor, fontSize: 11 }}
+                  textStyle={{ color: categoryColor, fontSize: 11, fontFamily: 'NotoSansJP-Regular' }}
                   compact
                 >
                   {item.category}
                 </Chip>
                 {item.expiry && (
-                  <Text style={[styles.expiryText, { color: isExpired ? '#E74C3C' : isExpiringSoon ? '#FF9800' : textSecondaryColor, fontWeight: isExpired ? 'bold' : 'normal' }]}> 
+                  <Text style={[styles.expiryText, { color: isExpired ? '#E74C3C' : isExpiringSoon ? '#FF9800' : textSecondaryColor, fontWeight: isExpired ? 'bold' : 'normal', fontFamily: 'NotoSansJP-Regular' }]}> 
                     {isExpired ? '期限切れ ' : isExpiringSoon ? '⚠️ ' : ''}{item.expiry}
                   </Text>
                 )}
@@ -188,7 +188,7 @@ export default function FridgeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}> 
       <View style={[styles.header, { alignItems: 'center' }] }>
-        <Text style={[styles.title, { color: textColor, textAlign: 'center', letterSpacing: 2 }]}>STOCK</Text>
+        <Text style={[styles.title, { color: textColor, textAlign: 'center', letterSpacing: 2, fontFamily: 'NotoSansJP-Bold' }]}>STOCK</Text>
       </View>
       <ScrollView contentContainerStyle={styles.listContainer}>
         {grouped.map(section => (
@@ -198,14 +198,14 @@ export default function FridgeScreen() {
               <View style={{ backgroundColor: locationMeta[section.label].color, borderRadius: 16, padding: 6, marginRight: 8 }}>
                 <MaterialCommunityIcons name={locationMeta[section.label].icon as any} size={20} color="#fff" />
               </View>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: locationMeta[section.label].color }}>{section.label}</Text>
+              <Text style={{ fontSize: 18, color: locationMeta[section.label].color, fontFamily: 'NotoSansJP-Bold' }}>{section.label}</Text>
             </View>
             {/* セクション全体をカード風に */}
             <View style={{ backgroundColor: '#fff', borderRadius: 18, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2, minHeight: 80 }}>
               {section.items.length === 0 ? (
                 <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 24 }}>
                   <MaterialCommunityIcons name="emoticon-sad-outline" size={32} color="#B0BEC5" style={{ marginBottom: 6 }} />
-                  <Text style={{ color: '#B0BEC5', fontSize: 15 }}>食材がありません</Text>
+                  <Text style={{ color: '#B0BEC5', fontSize: 15, fontFamily: 'NotoSansJP-Regular' }}>食材がありません</Text>
                 </View>
               ) : (
                 section.items.map(item => (
@@ -237,7 +237,7 @@ export default function FridgeScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>食材を追加</Text>
+            <Text style={[styles.modalTitle, { fontFamily: 'NotoSansJP-Bold' }]}>食材を追加</Text>
             <TextInput
               mode="outlined"
               label="食材名"
@@ -272,15 +272,15 @@ export default function FridgeScreen() {
               activeOpacity={0.7}
             >
               <MaterialCommunityIcons name="camera-plus" size={20} color="#6C757D" />
-              <Text style={{ color: '#6C757D', fontSize: 14 }}>写真を追加</Text>
-              {newImage && <Text style={{ color: '#4CAF50', fontSize: 13 }}>選択済み</Text>}
+              <Text style={{ color: '#6C757D', fontSize: 14, fontFamily: 'NotoSansJP-Regular' }}>写真を追加</Text>
+              {newImage && <Text style={{ color: '#4CAF50', fontSize: 13, fontFamily: 'NotoSansJP-Regular' }}>選択済み</Text>}
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 12 }}>
               <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.modalBtn, { backgroundColor: '#E0E0E0' }]}> 
-                <Text style={{ color: '#333', fontWeight: 'bold' }}>キャンセル</Text>
+                <Text style={{ color: '#333', fontWeight: 'bold', fontFamily: 'NotoSansJP-Regular' }}>キャンセル</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleAddIngredient} style={[styles.modalBtn, { backgroundColor: '#FF6B35' }]}> 
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>追加</Text>
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontFamily: 'NotoSansJP-Regular' }}>追加</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 4,
   },
   subtitle: {

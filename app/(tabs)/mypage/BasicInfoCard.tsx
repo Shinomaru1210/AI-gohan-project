@@ -14,22 +14,22 @@ const BasicInfoCard: React.FC<BasicInfoCardProps> = ({ phone, gender, birth, are
     <Text style={styles.title}>基本情報</Text>
     <View style={styles.row}>
       <MaterialCommunityIcons name="phone" size={20} color="#FF9800" style={styles.icon} />
-      <Text style={styles.label}>電話番号：</Text>
+      <Text style={{ fontFamily: 'NotoSansJP-Regular' }}>電話番号：</Text>
       <Text style={styles.value}>{phone}</Text>
     </View>
     <View style={styles.row}>
       <MaterialCommunityIcons name="gender-male-female" size={20} color="#4CAF50" style={styles.icon} />
-      <Text style={styles.label}>性別：</Text>
+      <Text style={{ fontFamily: 'NotoSansJP-Regular' }}>性別：</Text>
       <Text style={styles.value}>{gender}</Text>
     </View>
     <View style={styles.row}>
       <MaterialCommunityIcons name="cake-variant" size={20} color="#E57373" style={styles.icon} />
-      <Text style={styles.label}>生年月日：</Text>
+      <Text style={{ fontFamily: 'NotoSansJP-Regular' }}>生年月日：</Text>
       <Text style={styles.value}>{birth}</Text>
     </View>
     <View style={styles.row}>
       <MaterialCommunityIcons name="map-marker" size={20} color="#2196F3" style={styles.icon} />
-      <Text style={styles.label}>居住エリア：</Text>
+      <Text style={{ fontFamily: 'NotoSansJP-Regular' }}>居住エリア：</Text>
       <Text style={styles.value}>{area}</Text>
     </View>
   </View>
@@ -46,10 +46,10 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   title: {
-    fontWeight: 'bold',
     fontSize: 17,
     marginBottom: 10,
     color: '#FF6B35',
+    fontFamily: 'NotoSansJP-Bold',
   },
   row: {
     flexDirection: 'row',

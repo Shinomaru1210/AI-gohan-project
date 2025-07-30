@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, TextInput as RNTextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, TextInput as RNTextInput, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Button, Chip, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -53,22 +53,22 @@ export default function BuyListEditScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFF' }}>
-      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 16 }}>
         {/* ヘッダー */}
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#F0F0F0', marginBottom: 12 }}>
           <TouchableOpacity onPress={() => router.back()} style={{ padding: 4, marginRight: 8 }}>
             <MaterialCommunityIcons name="arrow-left" size={28} color="#333" />
           </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, textAlign: 'center', marginRight: 32 }}>買い物リスト編集</Text>
+          <Text style={{ fontSize: 20, flex: 1, textAlign: 'center', marginRight: 32, fontFamily: 'NotoSansJP-Bold' }}>買い物リスト編集</Text>
         </View>
         {/* カテゴリ */}
-        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 8 }}>カテゴリ</Text>
+        <Text style={{ fontSize: 15, marginBottom: 8, fontFamily: 'NotoSansJP-Bold' }}>カテゴリ</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
           {categories.map((cat) => (
             <Chip
               key={cat}
               style={{ backgroundColor: category === cat ? categoryMeta[cat].color + '30' : '#F8F9FA', borderRadius: 16, paddingHorizontal: 6, marginBottom: 6 }}
-              textStyle={{ color: categoryMeta[cat].color, fontWeight: 'bold' }}
+              textStyle={{ color: categoryMeta[cat].color, fontFamily: 'NotoSansJP-Bold' }}
               selected={category === cat}
               onPress={() => setCategory(cat)}
               icon={categoryMeta[cat].icon as any}
@@ -79,7 +79,7 @@ export default function BuyListEditScreen() {
           ))}
         </View>
         {/* 食材名 */}
-        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 4 }}>食材名</Text>
+        <Text style={{ fontSize: 15, marginBottom: 4, fontFamily: 'NotoSansJP-Bold' }}>食材名</Text>
         <RNTextInput
           value={name}
           onChangeText={setName}
@@ -87,7 +87,7 @@ export default function BuyListEditScreen() {
           style={{ marginBottom: 16, borderRadius: 12, backgroundColor: '#FAFAFA', fontSize: 16, paddingHorizontal: 12, height: 40 }}
         />
         {/* 数量 */}
-        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 4 }}>数量</Text>
+        <Text style={{ fontSize: 15, marginBottom: 4, fontFamily: 'NotoSansJP-Bold' }}>数量</Text>
         <RNTextInput
           value={amount}
           onChangeText={setAmount}
@@ -95,13 +95,13 @@ export default function BuyListEditScreen() {
           style={{ marginBottom: 16, borderRadius: 12, backgroundColor: '#FAFAFA', fontSize: 16, paddingHorizontal: 12, height: 40 }}
         />
         {/* 優先度 */}
-        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 8 }}>優先度</Text>
+        <Text style={{ fontSize: 15, marginBottom: 8, fontFamily: 'NotoSansJP-Bold' }}>優先度</Text>
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
           {priorityOptions.map(opt => (
             <Chip
               key={opt.key}
               style={{ backgroundColor: priority === opt.key ? opt.color + '30' : '#F8F9FA', borderRadius: 16, paddingHorizontal: 6 }}
-              textStyle={{ color: opt.color, fontWeight: 'bold' }}
+              textStyle={{ color: opt.color, fontFamily: 'NotoSansJP-Bold' }}
               selected={priority === opt.key}
               onPress={() => setPriority(opt.key as any)}
               icon={opt.icon as any}
@@ -112,7 +112,7 @@ export default function BuyListEditScreen() {
           ))}
         </View>
         {/* メモ欄 */}
-        <Text style={{ fontWeight: 'bold', fontSize: 15, marginBottom: 4 }}>メモ</Text>
+        <Text style={{ fontSize: 15, marginBottom: 4, fontFamily: 'NotoSansJP-Bold' }}>メモ</Text>
         <RNTextInput
           value={memo}
           onChangeText={setMemo}
@@ -124,13 +124,13 @@ export default function BuyListEditScreen() {
           onPress={handleSave}
           style={{ marginTop: 8, borderRadius: 16, backgroundColor: '#FF6B35' }}
           contentStyle={{ paddingVertical: 12 }}
-          labelStyle={{ fontWeight: 'bold', fontSize: 16 }}
+          labelStyle={{ fontFamily: 'NotoSansJP-Bold', fontSize: 16 }}
           disabled={!name.trim()}
           icon="content-save"
         >
           保存する
         </Button>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 } 

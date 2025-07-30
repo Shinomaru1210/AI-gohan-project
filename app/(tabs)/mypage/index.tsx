@@ -31,7 +31,7 @@ export default function MyPageScreen() {
         />
         {/* 今後、各セクションカードをここに順次追加 */}
         <View style={{ alignItems: 'center', marginTop: 40 }}>
-          <Text style={{ color: '#aaa' }}>（各種セクションは今後追加されます）</Text>
+          <Text style={{ fontFamily: 'NotoSansJP-Regular' }}>（各種セクションは今後追加されます）</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

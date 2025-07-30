@@ -39,7 +39,7 @@ export default function SuggestionResultScreen() {
         <View style={{ backgroundColor: '#FFF3E6', borderRadius: 32, padding: 10, marginBottom: 8, shadowColor: '#FF6B35', shadowOpacity: 0.12, shadowRadius: 8, elevation: 2 }}>
           <MaterialCommunityIcons name="lightbulb-on" size={44} color="#FF6B35" />
         </View>
-        <Text style={{ color: '#FF6B35', fontSize: 22, fontWeight: 'bold', letterSpacing: 2 }}>提案結果</Text>
+        <Text style={{ color: '#FF6B35', fontSize: 22, fontFamily: 'NotoSansJP-Bold', letterSpacing: 2 }}>提案結果</Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}>
         {suggestions.map((suggestion) => (
@@ -58,21 +58,21 @@ export default function SuggestionResultScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
               <MaterialCommunityIcons name="silverware-fork-knife" size={26} color="#FF6B35" style={{ marginRight: 10 }} />
-              <Text style={{ fontSize: 21, fontWeight: 'bold', color: '#222', flex: 1, letterSpacing: 1 }}>{suggestion.name}</Text>
+              <Text style={{ fontSize: 21, color: '#222', flex: 1, letterSpacing: 1, fontFamily: 'NotoSansJP-Bold' }}>{suggestion.name}</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: difficultyColors[suggestion.difficulty] + '22', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 3, marginLeft: 10 }}>
                 <MaterialCommunityIcons name={getDifficultyIcon(suggestion.difficulty)} size={16} color={difficultyColors[suggestion.difficulty]} />
-                <Text style={{ color: difficultyColors[suggestion.difficulty], fontWeight: 'bold', fontSize: 15, marginLeft: 3 }}>{suggestion.difficulty === 'easy' ? '簡単' : suggestion.difficulty === 'medium' ? '普通' : '難しい'}</Text>
+                <Text style={{ color: difficultyColors[suggestion.difficulty], fontSize: 15, marginLeft: 3, fontFamily: 'NotoSansJP-Bold' }}>{suggestion.difficulty === 'easy' ? '簡単' : suggestion.difficulty === 'medium' ? '普通' : '難しい'}</Text>
               </View>
             </View>
-            <Text style={{ color: '#888', fontSize: 16, marginBottom: 14, lineHeight: 22 }}>{suggestion.description}</Text>
+            <Text style={{ color: '#888', fontSize: 16, marginBottom: 14, lineHeight: 22, fontFamily: 'NotoSansJP-Regular' }}>{suggestion.description}</Text>
             <View style={{ flexDirection: 'row', gap: 20, marginBottom: 10 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <MaterialCommunityIcons name="clock-outline" size={18} color="#888" />
-                <Text style={{ color: '#888', fontSize: 15 }}>{suggestion.time}</Text>
+                <Text style={{ color: '#888', fontSize: 15, fontFamily: 'NotoSansJP-Regular' }}>{suggestion.time}</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <MaterialCommunityIcons name="fire" size={18} color="#F39C12" />
-                <Text style={{ color: '#888', fontSize: 15 }}>{suggestion.calories}</Text>
+                <Text style={{ color: '#888', fontSize: 15, fontFamily: 'NotoSansJP-Regular' }}>{suggestion.calories}</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
@@ -80,7 +80,7 @@ export default function SuggestionResultScreen() {
                 <Chip
                   key={idx}
                   style={{ backgroundColor: '#FF6B35' + '18', borderRadius: 12, marginRight: 6, marginBottom: 6, paddingHorizontal: 0, elevation: 0 }}
-                  textStyle={{ color: '#FF6B35', fontSize: 13, fontWeight: 'bold', letterSpacing: 1 }}
+                  textStyle={{ color: '#FF6B35', fontSize: 13, fontFamily: 'NotoSansJP-Medium', letterSpacing: 1 }}
                   compact
                 >
                   {tag}
@@ -110,7 +110,7 @@ export default function SuggestionResultScreen() {
           activeOpacity={0.88}
         >
           <MaterialCommunityIcons name="refresh" size={22} color="white" style={{ marginRight: 8 }} />
-          <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold', letterSpacing: 1 }}>もう一度提案する</Text>
+          <Text style={{ color: 'white', fontSize: 16, fontFamily: 'NotoSansJP-Bold', letterSpacing: 1 }}>もう一度提案する</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -53,13 +53,14 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
     color: '#333',
+    fontFamily: 'NotoSansJP-Bold',
   },
   email: {
     color: '#6C757D',
     fontSize: 14,
     marginBottom: 2,
+    fontFamily: 'NotoSansJP-Regular',
   },
   editBtn: {
     alignSelf: 'flex-end',
@@ -73,8 +74,8 @@ const styles = StyleSheet.create({
   },
   editText: {
     color: '#fff',
-    fontWeight: 'bold',
     fontSize: 15,
+    fontFamily: 'NotoSansJP-Bold',
   },
 });
 
