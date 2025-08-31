@@ -1,9 +1,9 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
+import { AppColors } from '@/constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Animated, TextInput as RNTextInput, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Chip, IconButton, Surface } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Item = {
@@ -19,8 +19,8 @@ type Item = {
 export default function BuyListScreen() {
   const router = useRouter();
   const [items, setItems] = useState<Item[]>([
-    { id: '1', name: '牛乳', checked: false, category: '乳製品', priority: 'high', amount: '2本', memo: '' },
-    { id: '2', name: '卵', checked: false, category: '乳製品', priority: 'medium', amount: '10個', memo: '' },
+    { id: '1', name: '牛乳', checked: false, category: '卵・乳製品', priority: 'high', amount: '2本', memo: '' },
+    { id: '2', name: '卵', checked: false, category: '卵・乳製品', priority: 'medium', amount: '10個', memo: '' },
     { id: '3', name: 'にんじん', checked: true, category: '野菜', priority: 'low', amount: '3本', memo: '' },
     { id: '4', name: '豚肉', checked: false, category: '肉類', priority: 'high', amount: '200g', memo: '' },
     { id: '5', name: '米', checked: false, category: '主食', priority: 'medium', amount: '5kg', memo: '' },
@@ -28,23 +28,22 @@ export default function BuyListScreen() {
   const [scaleAnim] = useState(new Animated.Value(1));
 
   // テーマカラーの取得
-  const backgroundColor = useThemeColor({}, 'background');
-  const textColor = useThemeColor({}, 'text');
-  const textSecondaryColor = '#6C757D';
+  const textSecondaryColor = AppColors.text.secondary;
 
   const categoryColors = {
-    '野菜': '#4CAF50',
-    '肉類': '#F44336',
-    '乳製品': '#616161',
-    '調味料': '#FF9800',
-    '主食': '#9C27B0',
-    'その他': '#607D8B',
+    '野菜': AppColors.category.vegetable,
+    '肉類': AppColors.category.meat,
+    '魚介類': AppColors.category.fish,
+    '卵・乳製品': AppColors.category.dairy,
+    '調味料': AppColors.category.seasoning,
+    '主食': AppColors.category.grain,
+    'その他': AppColors.category.other,
   };
 
   const priorityColors = {
-    'high': '#E74C3C',
-    'medium': '#F39C12',
-    'low': '#27AE60',
+    'high': AppColors.status.error,
+    'medium': AppColors.status.warning,
+    'low': AppColors.status.success,
   };
 
   const toggleCheck = (id: string) => {
@@ -88,16 +87,7 @@ export default function BuyListScreen() {
     setItems(prev => prev.filter(item => item.id !== id));
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case '野菜': return 'food-apple';
-      case '肉類': return 'food-steak';
-      case '乳製品': return 'food-variant';
-      case '調味料': return 'bottle-tonic';
-      case '主食': return 'rice';
-      default: return 'food';
-    }
-  };
+
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
@@ -113,9 +103,9 @@ export default function BuyListScreen() {
     const priorityColor = priorityColors[item.priority as keyof typeof priorityColors] || '#F39C12';
 
     return (
-      <Surface style={[styles.itemCard, { backgroundColor: '#FFFFFF', borderColor: '#E9ECEF', marginVertical: 4, borderRadius: 14, elevation: 1 }]} elevation={1}>
+      <View style={styles.itemCard}>
         <TouchableOpacity
-          style={[styles.itemContent, { borderRadius: 14 }]}
+          style={styles.itemContent}
           onPress={() => toggleCheck(item.id)}
           activeOpacity={0.7}
         >
@@ -124,50 +114,55 @@ export default function BuyListScreen() {
               <MaterialCommunityIcons
                 name={item.checked ? 'check-circle' : 'circle-outline'}
                 size={24}
-                color={item.checked ? '#2ECC71' : textSecondaryColor}
+                color={item.checked ? AppColors.status.success : textSecondaryColor}
               />
             </View>
             <View style={styles.itemInfo}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                <Text style={{ fontFamily: 'NotoSansJP-Regular', color: textColor, flexShrink: 1 }} numberOfLines={1}>{item.name}</Text>
-                {item.amount ? (
-                  <Text style={{ color: '#222', fontSize: 14, marginLeft: 8, textAlign: 'right', minWidth: 48 }}>{item.amount}</Text>
-                ) : <View style={{ minWidth: 48 }} />}
-              </View>
-              <View style={styles.itemMeta}>
-                <Chip 
-                  style={[styles.categoryChip, { backgroundColor: categoryColor + '15' }]}
-                  textStyle={{ color: categoryColor, fontSize: 11 }}
-                  compact
-                >
-                  {item.category}
-                </Chip>
-                <View style={styles.priorityContainer}>
-                  <MaterialCommunityIcons
-                    name={getPriorityIcon(item.priority || 'medium')}
-                    size={12}
-                    color={priorityColor}
-                  />
+              <View style={styles.itemHeader}>
+                <View style={styles.itemNameContainer}>
+                  <Text style={[
+                    styles.itemName,
+                    item.checked && styles.itemChecked
+                  ]} numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <View style={[styles.categoryChip, { backgroundColor: categoryColor + '15' }]}>
+                    <Text style={[styles.categoryText, { color: categoryColor }]}>
+                      {item.category}
+                    </Text>
+                  </View>
+                  <View style={styles.priorityContainer}>
+                    <MaterialCommunityIcons
+                      name={getPriorityIcon(item.priority || 'medium')}
+                      size={16}
+                      color={priorityColor}
+                    />
+                  </View>
                 </View>
+                {item.amount ? (
+                  <Text style={styles.itemAmount}>{item.amount}</Text>
+                ) : <View style={styles.itemAmountPlaceholder} />}
               </View>
+
               {/* メモ欄 */}
               <RNTextInput
                 value={item.memo}
                 onChangeText={text => setItems(prev => prev.map(i => i.id === item.id ? { ...i, memo: text } : i))}
                 placeholder="メモ"
-                style={{ fontSize: 13, color: '#888', backgroundColor: '#F8F9FA', borderRadius: 8, paddingHorizontal: 8, marginTop: 4, height: 40 }}
+                style={styles.memoInput}
                 placeholderTextColor="#B0BEC5"
               />
             </View>
           </View>
-          <IconButton
-            icon="delete-outline"
-            size={20}
+          <TouchableOpacity
+            style={styles.deleteButton}
             onPress={() => handleDelete(item.id)}
-            iconColor={textSecondaryColor}
-          />
+            activeOpacity={0.7}
+          >
+            <MaterialCommunityIcons name="delete-outline" size={20} color={textSecondaryColor} />
+          </TouchableOpacity>
         </TouchableOpacity>
-      </Surface>
+      </View>
     );
   };
 
@@ -175,20 +170,20 @@ export default function BuyListScreen() {
   const totalCount = items.length;
 
   // カテゴリごとにグループ化
-  const categories = ['野菜', '肉類', '乳製品', '主食', '調味料', 'その他'] as const;
-  // checked/un-checked分岐をやめ、全て表示
+  const categories = ['野菜', '肉類', '魚介類', '卵・乳製品', '主食', '調味料', 'その他'] as const;
   const grouped = categories.map(cat => ({
     label: cat,
     items: items.filter(i => i.category === cat),
   }));
 
   const categoryMeta = {
-    '野菜': { color: '#4CAF50', icon: 'food-apple' },
-    '肉類': { color: '#F44336', icon: 'food-steak' },
-    '乳製品': { color: '#616161', icon: 'food-variant' },
-    '主食': { color: '#9C27B0', icon: 'rice' },
-    '調味料': { color: '#FF9800', icon: 'bottle-tonic' },
-    'その他': { color: '#607D8B', icon: 'food' },
+    '野菜': { color: AppColors.category.vegetable, icon: 'food-apple' },
+    '肉類': { color: AppColors.category.meat, icon: 'food-steak' },
+    '魚介類': { color: AppColors.category.fish, icon: 'fish' },
+    '卵・乳製品': { color: AppColors.category.dairy, icon: 'food-variant' },
+    '主食': { color: AppColors.category.grain, icon: 'rice' },
+    '調味料': { color: AppColors.category.seasoning, icon: 'bottle-tonic' },
+    'その他': { color: AppColors.category.other, icon: 'food' },
   };
 
   // メモ一括削除の確認
@@ -204,79 +199,85 @@ export default function BuyListScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}> 
-      <View style={[styles.header, { alignItems: 'center' }] }>
-        <Text style={{ fontFamily: 'NotoSansJP-Regular', fontSize: 24, fontWeight: 'bold', marginBottom: 4, color: textColor, textAlign: 'center', letterSpacing: 2 }}>SHOPPING</Text>
-        <Text style={{ fontFamily: 'NotoSansJP-Regular', fontSize: 14, opacity: 0.8, color: textSecondaryColor, textAlign: 'center', marginTop: 2 }}>{checkedCount}/{totalCount} 完了</Text>
-      </View>
-      <ScrollView contentContainerStyle={styles.listContainer}>
-        {grouped.map(section => (
-          <View key={section.label} style={{ marginBottom: 28 }}>
-            {/* セクションタイトル */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <View style={{ backgroundColor: categoryMeta[section.label].color, borderRadius: 16, padding: 6, marginRight: 8 }}>
-                <MaterialCommunityIcons name={categoryMeta[section.label].icon as any} size={20} color="#fff" />
-              </View>
-              <Text style={{ fontSize: 18, color: categoryMeta[section.label].color, fontFamily: 'NotoSansJP-Bold' }}>{section.label}</Text>
+    <SafeAreaView style={styles.container}>
+      {/* ヘッダーグラデーション */}
+      <LinearGradient
+        colors={['#E8F5E8', '#D4EDDA']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name="shopping" size={24} color={AppColors.status.success} />
             </View>
-            {/* セクション全体をカード風に */}
-            <View style={{ backgroundColor: '#fff', borderRadius: 18, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2, minHeight: 80 }}>
-              {section.items.length === 0 ? (
-                <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 24 }}>
-                  <MaterialCommunityIcons name="emoticon-sad-outline" size={32} color="#B0BEC5" style={{ marginBottom: 6 }} />
-                  <Text style={{ color: '#B0BEC5', fontSize: 15 }}>買うものがありません</Text>
-                </View>
-              ) : (
-                section.items.map(item => (
-                  <View key={item.id} style={{ marginBottom: 10 }}>
-                    {renderItem({ item })}
-                  </View>
-                ))
-              )}
-            </View>
+            <Text style={styles.headerTitle}>買い物リスト</Text>
           </View>
-        ))}
+          <Text style={styles.headerSubtitle}>{checkedCount}/{totalCount} 完了</Text>
+        </View>
+      </LinearGradient>
+
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.mainContent}>
+          {grouped.map(section => (
+            <View key={section.label} style={styles.section}>
+              {/* セクションタイトル */}
+              <View style={styles.sectionHeader}>
+                <View style={[styles.categoryIcon, { backgroundColor: categoryMeta[section.label].color }]}>
+                  <MaterialCommunityIcons name={categoryMeta[section.label].icon as any} size={20} color="#fff" />
+                </View>
+                <Text style={[styles.sectionTitle, { color: categoryMeta[section.label].color }]}>
+                  {section.label}
+                </Text>
+              </View>
+              {/* セクション全体をカード風に */}
+              <View style={styles.sectionCard}>
+                {section.items.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <MaterialCommunityIcons name="emoticon-sad-outline" size={32} color="#B0BEC5" />
+                    <Text style={styles.emptyText}>買うものがありません</Text>
+                  </View>
+                ) : (
+                  section.items.map(item => (
+                    <View key={item.id} style={styles.itemWrapper}>
+                      {renderItem({ item })}
+                    </View>
+                  ))
+                )}
+              </View>
+            </View>
+          ))}
+        </View>
       </ScrollView>
-      {/* ボタン2つを横並びで配置（大きさ固定） */}
-      {/* タブバー上に仕切り線を追加 */}
-      <View style={{ height: 1, backgroundColor: '#E9ECEF', marginHorizontal: 0, marginBottom: 0 }} />
-      <View style={{ flexDirection: 'row', gap: 12, paddingHorizontal: 20, marginBottom: 0, marginTop: 8 }}>
-        <Animated.View style={{ flex: 1, transform: [{ scale: scaleAnim }] }}>
-          <TouchableOpacity 
-            style={{
-              height: 56,
-              width: '100%',
-              backgroundColor: '#FF6B35',
-              borderRadius: 16,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-            }}
-            onPress={handleAdd}
-            activeOpacity={0.8}
-          >
-            <MaterialCommunityIcons name="plus" size={24} color="white" />
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>食材を追加</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        <View style={{ flex: 1 }}>
+      
+      {/* 画面下部に固定のボタン */}
+      <View style={styles.bottomContainer}>
+        <View style={styles.buttonRow}>
+          <Animated.View style={{ flex: 1, transform: [{ scale: scaleAnim }] }}>
+            <TouchableOpacity 
+              style={styles.addButton}
+              onPress={handleAdd}
+              activeOpacity={0.88}
+            >
+              <LinearGradient
+                colors={[AppColors.status.success, '#66BB6A']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.addButtonGradient}
+              >
+                <MaterialCommunityIcons name="plus" size={22} color="white" />
+                <Text style={styles.addButtonText}>食材を追加</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </Animated.View>
           <TouchableOpacity
-            style={{
-              height: 56,
-              width: '100%',
-              backgroundColor: '#B0BEC5',
-              borderRadius: 16,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-            }}
+            style={styles.clearButton}
             onPress={handleClearMemos}
             activeOpacity={0.85}
           >
-            <MaterialCommunityIcons name="notebook-remove-outline" size={20} color="#fff" />
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>メモを消す</Text>
+            <MaterialCommunityIcons name="notebook-remove-outline" size={20} color="#6C757D" />
+            <Text style={styles.clearButtonText}>メモを消す</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -287,33 +288,108 @@ export default function BuyListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: AppColors.background,
   },
-  header: {
+  headerGradient: {
+    paddingTop: 12,
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 12,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 4,
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  subtitle: {
-    fontSize: 14,
-    opacity: 0.8,
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  listContainer: {
+  iconContainer: {
+    backgroundColor: AppColors.surface,
+    borderRadius: 16,
+    padding: 8,
+    shadowColor: AppColors.status.success,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  headerTitle: {
+    fontSize: 20,
+    color: AppColors.text.primary,
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: AppColors.text.secondary,
+    fontFamily: 'NotoSansJP-Regular',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 120,
+  },
+  mainContent: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingTop: 12,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  categoryIcon: {
+    borderRadius: 16,
+    padding: 6,
+    marginRight: 8,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  sectionCard: {
+    backgroundColor: AppColors.surface,
+    borderRadius: 16,
+    padding: 12,
+    shadowColor: AppColors.shadow.light,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    minHeight: 80,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
+  },
+  emptyText: {
+    color: AppColors.text.light,
+    fontSize: 15,
+    fontFamily: 'NotoSansJP-Regular',
+    marginTop: 6,
+  },
+  itemWrapper: {
+    marginBottom: 8,
   },
   itemCard: {
+    backgroundColor: AppColors.surface,
     borderRadius: 12,
     borderWidth: 1,
+    borderColor: '#F0F0F0',
     overflow: 'hidden',
   },
   itemContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 12,
   },
   itemLeft: {
     flexDirection: 'row',
@@ -326,40 +402,131 @@ const styles = StyleSheet.create({
   itemInfo: {
     flex: 1,
   },
+  itemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  itemNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flex: 1,
+  },
   itemName: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
+    color: AppColors.text.primary,
+    fontFamily: 'NotoSansJP-Medium',
+    flexShrink: 1,
   },
   itemChecked: {
     textDecorationLine: 'line-through',
-    color: '#B0BEC5',
+    color: AppColors.text.light,
+  },
+  itemAmount: {
+    color: AppColors.text.primary,
+    fontSize: 14,
+    fontFamily: 'NotoSansJP-Regular',
+    marginLeft: 8,
+    textAlign: 'right',
+    minWidth: 48,
+  },
+  itemAmountPlaceholder: {
+    minWidth: 48,
   },
   itemMeta: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    marginBottom: 4,
   },
   categoryChip: {
     borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  categoryText: {
+    fontSize: 11,
+    fontFamily: 'NotoSansJP-Medium',
   },
   priorityContainer: {
+    marginLeft: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  memoInput: {
+    fontSize: 13,
+    color: AppColors.text.secondary,
+    backgroundColor: AppColors.background,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+    height: 40,
+    fontFamily: 'NotoSansJP-Regular',
+  },
+  deleteButton: {
+    padding: 8,
     marginLeft: 8,
   },
-  separator: {
-    height: 8,
+  bottomContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 20,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
   },
   addButton: {
-    margin: 20,
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: AppColors.status.success,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  addButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
     gap: 8,
   },
   addButtonText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 16,
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  clearButton: {
+    flex: 1,
+    backgroundColor: AppColors.background,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#E9ECEF',
+  },
+  clearButtonText: {
+    color: AppColors.text.secondary,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Bold',
   },
 }); 
