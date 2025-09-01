@@ -1,4 +1,5 @@
 import { AppColors } from '@/constants/Colors';
+import { useFridgeData } from '@/hooks/useFirebaseData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -32,12 +33,14 @@ const inputTabs = [
 ];
 
 export default function FridgeAddScreen() {
+  const { addItem } = useFridgeData();
   const [category, setCategory] = useState('野菜');
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [unit, setUnit] = useState('g');
   const [count, setCount] = useState('');
   const [expiry, setExpiry] = useState('');
+  const [location, setLocation] = useState<'冷蔵' | '冷凍' | 'その他'>('冷蔵');
   const [showSnackbar, setShowSnackbar] = useState(false);
   const router = useRouter();
 
@@ -60,15 +63,38 @@ export default function FridgeAddScreen() {
     setExpiry(d.toISOString().slice(0, 10));
     Alert.alert('推定賞味期限', '（ダミー）推定賞味期限を自動入力しました！');
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) {
       Alert.alert('エラー', '食材名は必須です');
       return;
     }
-    setShowSnackbar(true);
-    setTimeout(() => {
-      router.back();
-    }, 800);
+
+    console.log('保存開始:', { name, category, amount, unit, count, expiry, location });
+
+    try {
+      const itemData = {
+        name: name.trim(),
+        category,
+        amount: amount || undefined,
+        unit: amount ? unit : undefined,
+        count: count || undefined,
+        expiry: expiry || undefined,
+        location,
+      };
+      
+      console.log('保存するデータ:', itemData);
+      
+      const result = await addItem(itemData);
+      console.log('保存成功, ID:', result);
+
+      setShowSnackbar(true);
+      setTimeout(() => {
+        router.back();
+      }, 800);
+    } catch (error) {
+      console.error('保存エラー詳細:', error);
+      Alert.alert('エラー', '食材の保存に失敗しました');
+    }
   };
 
   return (
@@ -207,6 +233,40 @@ export default function FridgeAddScreen() {
                 placeholderTextColor="#B0BEC5"
                 keyboardType="numeric"
               />
+            </View>
+          </View>
+
+          {/* 保存場所 */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>保存場所</Text>
+            <View style={styles.chipContainer}>
+              {['冷蔵', '冷凍', 'その他'].map((loc) => (
+                <TouchableOpacity
+                  key={loc}
+                  style={[
+                    styles.chip,
+                    location === loc && styles.chipSelected,
+                    { 
+                      borderColor: AppColors.secondary,
+                      backgroundColor: location === loc ? AppColors.secondary : '#fff'
+                    }
+                  ]}
+                  onPress={() => setLocation(loc as '冷蔵' | '冷凍' | 'その他')}
+                  activeOpacity={0.7}
+                >
+                  <MaterialCommunityIcons 
+                    name={loc === '冷蔵' ? 'fridge-outline' : loc === '冷凍' ? 'snowflake' : 'archive-outline'} 
+                    size={16} 
+                    color={location === loc ? '#fff' : AppColors.secondary} 
+                  />
+                  <Text style={[
+                    styles.chipText,
+                    { color: location === loc ? '#fff' : AppColors.secondary }
+                  ]}>
+                    {loc}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 

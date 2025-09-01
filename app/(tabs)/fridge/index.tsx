@@ -1,84 +1,42 @@
 import PremiumFeatureLock from '@/components/ui/PremiumFeatureLock';
 import SubscriptionModal from '@/components/ui/SubscriptionModal';
 import { AppColors } from '@/constants/Colors';
+import { useFridgeData } from '@/hooks/useFirebaseData';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Animated, Image, Modal, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ActivityIndicator, Alert, Animated, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FridgeScreen() {
   const router = useRouter();
-  const [ingredients, setIngredients] = useState<{
-    id: string,
-    name: string,
-    category: string,
-    amount?: string,
-    unit?: string,
-    count?: string,
-    expiry?: string,
-    image?: string,
-    location: '冷蔵' | '冷凍' | 'その他',
-  }[]>([
-    { id: '1', name: 'にんじん', category: '野菜', amount: '2', unit: '', count: '2', expiry: '2024-01-15', location: '冷蔵' },
-    { id: '2', name: 'たまねぎ', category: '野菜', amount: '1', unit: '', count: '1', expiry: '2024-01-20', location: '冷蔵' },
-    { id: '3', name: '豚肉', category: '肉類', amount: '200', unit: 'g', count: '1', expiry: '2024-01-12', location: '冷凍' },
-    { id: '4', name: '卵', category: '卵・乳製品', amount: '50', unit: 'g', count: '6', expiry: '2024-01-18', location: '冷蔵' },
-    { id: '5', name: '牛乳', category: '卵・乳製品', amount: '1000', unit: 'ml', count: '2', expiry: '2024-01-14', location: 'その他' },
-  ]);
+  const { items: ingredients, loading, error, addItem, deleteItem, refresh } = useFridgeData();
+  
+  // デバッグ用：データの状態を確認
+  console.log('FridgeScreen - 現在の食材データ:', {
+    count: ingredients.length,
+    items: ingredients,
+    loading,
+    error
+  });
+  
+  // 画面がフォーカスされた時にデータを再取得
+  useFocusEffect(
+    useCallback(() => {
+      console.log('FridgeScreen - 画面がフォーカスされました。データを再取得します。');
+      refresh();
+    }, [refresh])
+  );
+  
   const [scaleAnim] = useState(new Animated.Value(1));
-  const [modalVisible, setModalVisible] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newCategory, setNewCategory] = useState('野菜');
-  const [newExpiry, setNewExpiry] = useState('');
-  const [newImage, setNewImage] = useState<string | undefined>(undefined);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showPremiumLock, setShowPremiumLock] = useState(false);
 
   // サブスクリプション状態（実際のアプリでは永続化された状態を使用）
   const isPremium = false; // デモ用：falseに設定
 
-  const pickNewImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert('許可が必要です', '写真ライブラリへのアクセスを許可してください');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-    if (!result.canceled) {
-      setNewImage(result.assets[0].uri);
-    }
-  };
 
-  const handleAddIngredient = () => {
-    if (!newName.trim()) {
-      Alert.alert('食材名を入力してください');
-      return;
-    }
-    setIngredients(prev => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        name: newName,
-        category: newCategory,
-        expiry: newExpiry,
-        image: newImage ?? undefined,
-        location: '冷蔵', // デフォルトでは冷蔵
-      },
-    ]);
-    setModalVisible(false);
-    setNewName('');
-    setNewCategory('野菜');
-    setNewExpiry('');
-    setNewImage(undefined);
-  };
 
   const textSecondaryColor = AppColors.text.secondary;
 
@@ -92,8 +50,12 @@ export default function FridgeScreen() {
     'その他': AppColors.category.other,
   };
 
-  const handleDelete = (id: string) => {
-    setIngredients(prev => prev.filter(item => item.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteItem(id);
+    } catch (error) {
+      console.error('食材の削除に失敗しました:', error);
+    }
   };
 
   // サブスク関連のハンドラー
@@ -250,26 +212,71 @@ export default function FridgeScreen() {
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.mainContent}>
+          {/* ローディング状態 */}
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={AppColors.secondary} />
+              <Text style={styles.loadingText}>データを読み込み中...</Text>
+            </View>
+          )}
+
+          {/* エラー状態 */}
+          {error && (
+            <View style={styles.errorContainer}>
+              <MaterialCommunityIcons name="alert-circle" size={32} color={AppColors.status.error} />
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity style={styles.retryButton} onPress={() => window.location.reload()}>
+                <Text style={styles.retryButtonText}>再試行</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           {/* AI自動推定ボタン */}
-          <View style={styles.section}>
-            <TouchableOpacity
-              style={styles.aiEstimateButton}
-              onPress={isPremium ? () => console.log('AI自動推定実行') : () => setShowPremiumLock(true)}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={[AppColors.status.success, '#66BB6A']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.aiEstimateButtonGradient}
+          {!loading && !error && (
+            <View style={styles.section}>
+              <TouchableOpacity
+                style={styles.aiEstimateButton}
+                onPress={isPremium ? () => console.log('AI自動推定実行') : () => setShowPremiumLock(true)}
+                activeOpacity={0.8}
               >
-                <MaterialCommunityIcons name="robot" size={24} color="#fff" />
-                <Text style={styles.aiEstimateButtonText}>
-                  {isPremium ? 'AI自動推定' : 'AI自動推定（プレミアム）'}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+                <LinearGradient
+                  colors={[AppColors.status.success, '#66BB6A']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.aiEstimateButtonGradient}
+                >
+                  <MaterialCommunityIcons name="robot" size={24} color="#fff" />
+                  <Text style={styles.aiEstimateButtonText}>
+                    {isPremium ? 'AI自動推定' : 'AI自動推定（プレミアム）'}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
+          
+          {/* デバッグ用：手動更新ボタン */}
+          {!loading && !error && (
+            <View style={styles.section}>
+              <TouchableOpacity
+                style={styles.debugButton}
+                onPress={() => {
+                  console.log('手動更新ボタンが押されました');
+                  refresh();
+                }}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={[AppColors.secondary, '#90CAF9']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.debugButtonGradient}
+                >
+                  <MaterialCommunityIcons name="refresh" size={24} color="#fff" />
+                  <Text style={styles.debugButtonText}>データを更新</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {grouped.map(section => (
             <View key={section.label} style={styles.section}>
@@ -320,93 +327,7 @@ export default function FridgeScreen() {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* 追加モーダル */}
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>食材を追加</Text>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>食材名</Text>
-              <TextInput
-                value={newName}
-                onChangeText={setNewName}
-                placeholder="例：にんじん"
-                style={styles.textInput}
-                placeholderTextColor="#B0BEC5"
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>カテゴリ</Text>
-              <View style={styles.chipContainer}>
-                {Object.keys(categoryColors).map((cat) => (
-                  <TouchableOpacity
-                    key={cat}
-                    style={[
-                      styles.chip,
-                      newCategory === cat && styles.chipSelected,
-                      { borderColor: categoryColors[cat as keyof typeof categoryColors] }
-                    ]}
-                    onPress={() => setNewCategory(cat)}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={[
-                      styles.chipText,
-                      { color: newCategory === cat ? '#fff' : categoryColors[cat as keyof typeof categoryColors] }
-                    ]}>
-                      {cat}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>賞味期限</Text>
-              <TextInput
-                value={newExpiry}
-                onChangeText={setNewExpiry}
-                placeholder="例：2024-01-20"
-                style={styles.textInput}
-                placeholderTextColor="#B0BEC5"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.imageButton}
-              onPress={pickNewImage}
-              activeOpacity={0.7}
-            >
-              <MaterialCommunityIcons name="camera-plus" size={20} color="#6C757D" />
-              <Text style={styles.imageButtonText}>写真を追加</Text>
-              {newImage && <Text style={styles.imageSelectedText}>選択済み</Text>}
-            </TouchableOpacity>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                onPress={() => setModalVisible(false)} 
-                style={styles.cancelButton}
-              > 
-                <Text style={styles.cancelButtonText}>キャンセル</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={handleAddIngredient} 
-                style={styles.addButton}
-              > 
-                              <LinearGradient
-                colors={AppColors.gradient.secondary as [string, string]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.addButtonGradient}
-              >
-                  <Text style={styles.addButtonText}>追加</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+
 
       {/* プレミアム機能ロック */}
       {showPremiumLock && (
@@ -756,6 +677,62 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    color: AppColors.text.secondary,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Regular',
+    marginTop: 12,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  errorText: {
+    color: AppColors.status.error,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Regular',
+    marginTop: 12,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: AppColors.secondary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  debugButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: AppColors.secondary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  debugButtonGradient: {
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  debugButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontFamily: 'NotoSansJP-Bold',
   },
 });

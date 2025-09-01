@@ -1,30 +1,16 @@
 import { AppColors } from '@/constants/Colors';
+import { useBuyListData } from '@/hooks/useFirebaseData';
+import { BuyListItem } from '@/types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Animated, TextInput as RNTextInput, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Animated, TextInput as RNTextInput, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-type Item = {
-  id: string;
-  name: string;
-  checked: boolean;
-  category?: string;
-  priority?: 'high' | 'medium' | 'low';
-  amount?: string;
-  memo?: string;
-};
 
 export default function BuyListScreen() {
   const router = useRouter();
-  const [items, setItems] = useState<Item[]>([
-    { id: '1', name: '牛乳', checked: false, category: '卵・乳製品', priority: 'high', amount: '2本', memo: '' },
-    { id: '2', name: '卵', checked: false, category: '卵・乳製品', priority: 'medium', amount: '10個', memo: '' },
-    { id: '3', name: 'にんじん', checked: true, category: '野菜', priority: 'low', amount: '3本', memo: '' },
-    { id: '4', name: '豚肉', checked: false, category: '肉類', priority: 'high', amount: '200g', memo: '' },
-    { id: '5', name: '米', checked: false, category: '主食', priority: 'medium', amount: '5kg', memo: '' },
-  ]);
+  const { items, loading, error, addItem, updateItem, deleteItem, toggleCheck, clearAllMemos } = useBuyListData();
   const [scaleAnim] = useState(new Animated.Value(1));
 
   // テーマカラーの取得
@@ -46,15 +32,9 @@ export default function BuyListScreen() {
     'low': AppColors.status.success,
   };
 
-  const toggleCheck = (id: string) => {
-    setItems(prev =>
-      prev.map((item) =>
-        item.id === id ? { ...item, checked: !item.checked } : item
-      )
-    );
-  };
 
-  const handleAdd = () => {
+
+  const handleAdd = async () => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 0.95,
@@ -68,23 +48,30 @@ export default function BuyListScreen() {
       }),
     ]).start();
 
-    const newItem = { 
-      id: Date.now().toString(),
-      name: `新しい食材 ${items.length + 1}`, 
-      checked: false,
-      category: 'その他',
-      priority: 'medium' as const,
-      amount: '',
-      memo: '',
-    };
-    setItems(prev => [...prev, newItem]);
-    setTimeout(() => {
-      router.push({ pathname: `/buy_list/edit`, params: { id: newItem.id } } as any);
-    }, 100);
+    try {
+      const newItemId = await addItem({
+        name: `新しい食材 ${items.length + 1}`,
+        checked: false,
+        category: 'その他',
+        priority: 'medium',
+        amount: '',
+        memo: '',
+      });
+      
+      setTimeout(() => {
+        router.push({ pathname: `/buy_list/edit`, params: { id: newItemId } } as any);
+      }, 100);
+    } catch (error) {
+      console.error('アイテムの追加に失敗しました:', error);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteItem(id);
+    } catch (error) {
+      console.error('アイテムの削除に失敗しました:', error);
+    }
   };
 
 
@@ -98,7 +85,7 @@ export default function BuyListScreen() {
     }
   };
 
-  const renderItem = ({ item }: { item: Item }) => {
+  const renderItem = ({ item }: { item: BuyListItem }) => {
     const categoryColor = categoryColors[item.category as keyof typeof categoryColors] || '#607D8B';
     const priorityColor = priorityColors[item.priority as keyof typeof priorityColors] || '#F39C12';
 
@@ -147,7 +134,7 @@ export default function BuyListScreen() {
               {/* メモ欄 */}
               <RNTextInput
                 value={item.memo}
-                onChangeText={text => setItems(prev => prev.map(i => i.id === item.id ? { ...i, memo: text } : i))}
+                onChangeText={text => updateItem(item.id, { memo: text })}
                 placeholder="メモ"
                 style={styles.memoInput}
                 placeholderTextColor="#B0BEC5"
@@ -193,7 +180,7 @@ export default function BuyListScreen() {
       '本当に全てのメモを消しますか？',
       [
         { text: 'キャンセル', style: 'cancel' },
-        { text: 'OK', style: 'destructive', onPress: () => setItems(prev => prev.map(item => ({ ...item, memo: '' }))) },
+        { text: 'OK', style: 'destructive', onPress: () => clearAllMemos() },
       ]
     );
   };
@@ -220,7 +207,27 @@ export default function BuyListScreen() {
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.mainContent}>
-          {grouped.map(section => (
+          {/* ローディング状態 */}
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={AppColors.status.success} />
+              <Text style={styles.loadingText}>データを読み込み中...</Text>
+            </View>
+          )}
+
+          {/* エラー状態 */}
+          {error && (
+            <View style={styles.errorContainer}>
+              <MaterialCommunityIcons name="alert-circle" size={32} color={AppColors.status.error} />
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity style={styles.retryButton} onPress={() => window.location.reload()}>
+                <Text style={styles.retryButtonText}>再試行</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* データ表示 */}
+          {!loading && !error && grouped.map(section => (
             <View key={section.label} style={styles.section}>
               {/* セクションタイトル */}
               <View style={styles.sectionHeader}>
@@ -526,6 +533,41 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     color: AppColors.text.secondary,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Bold',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  loadingText: {
+    color: AppColors.text.secondary,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Regular',
+    marginTop: 12,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  errorText: {
+    color: AppColors.status.error,
+    fontSize: 16,
+    fontFamily: 'NotoSansJP-Regular',
+    marginTop: 12,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: AppColors.status.success,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  retryButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontFamily: 'NotoSansJP-Bold',
   },
